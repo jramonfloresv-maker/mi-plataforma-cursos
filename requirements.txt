@@ -1,6 +1,7 @@
 fastapi
 uvicorn
 sqlalchemy
+psycopg2-binary
 python-dotenv
 python-jose
 passlib
@@ -8,6 +9,7 @@ python-multipart
 stripe
 jinja2
 aiofiles
-psycopg2-binary
 email-validator
-pydantic[email]
+replicate==0.20.0
+openai
+httpx
