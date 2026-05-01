@@ -10,6 +10,7 @@ stripe
 jinja2
 aiofiles
 email-validator
-replicate==0.20.0
+replicate
 openai
 httpx
+Pillow>=10.0.0
