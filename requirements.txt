@@ -9,3 +9,5 @@ stripe
 jinja2
 aiofiles
 psycopg2-binary
+email-validator
+pydantic[email]
