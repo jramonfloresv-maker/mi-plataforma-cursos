@@ -107,7 +107,7 @@ def update_lead(
 @router.patch("/leads/{lead_id}/status")
 def update_lead_status(
         lead_id: int,
-        status: str = Query(..., regex="^(new|contacted|interested|converted|lost)$"),
+        status: str = Query(..., pattern="^(new|contacted|interested|converted|lost)$"),
         db: Session = Depends(get_db),
         current_user: models.User = Depends(auth.get_current_user)
 ):

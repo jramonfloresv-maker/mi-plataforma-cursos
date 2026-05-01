@@ -197,7 +197,7 @@ def update_task(
 @router.patch("/tasks/{task_id}/status")
 def update_task_status(
         task_id: int,
-        status: str = Query(..., regex="^(todo|in_progress|review|done)$"),
+        status: str = Query(..., pattern="^(todo|in_progress|review|done)$"),
         db: Session = Depends(get_db),
         current_user: models.User = Depends(auth.get_current_user)
 ):
