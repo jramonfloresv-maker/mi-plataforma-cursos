@@ -1,0 +1,22 @@
+mi-plataforma-cursos/          # Raíz del proyecto
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   ├── database.py
+│   │   ├── auth.py
+│   │   ├── routes/
+│   │   │   ├── __init__.py
+│   │   │   ├── courses.py
+│   │   │   ├── payments.py
+│   │   │   ├── crm.py
+│   │   │   └── projects.py
+│   │   ├── ai_agent.py
+│   │   └── templates/        # Para HTML si usas Jinja2
+│   ├── requirements.txt
+│   └── .env                   # Variables de entorno
+├── frontend/                  # (opcional, para React)
+├── docker-compose.yml
+└── .gitignore

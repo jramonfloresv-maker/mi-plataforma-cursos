@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPlatform - Cursos, Certificaciones y Consultoría</title>
+    <meta name="description" content="Cursos online, certificaciones DC3, consultoría en gestión de calidad, TPM, NOM-035 y más. Capacitación para empresas y profesionales.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ========== ESTILOS (Tus estilos actuales están bien, los mantengo) ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #f3f4f6; font-family: system-ui, -apple-system, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .animate-fadeInUp { animation: fadeInUp 0.6s ease-out; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .badge-live { background: #ef4444; color: white; animation: pulse 2s infinite; }
+        .badge-recorded { background: #10b981; color: white; }
+        .badge-company { background: #f59e0b; color: white; }
+        .badge-project { background: #8b5cf6; color: white; }
+        .nav-link { transition: all 0.3s; cursor: pointer; }
+        .nav-link.active { border-bottom: 3px solid white; }
+        .calendar-day { border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; transition: all 0.3s; cursor: pointer; text-align: center; min-height: 80px; }
+        .calendar-day:hover { border-color: #667eea; box-shadow: 0 4px 12px rgba(102,126,234,0.2); }
+        .calendar-day.has-course { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .calendar-day.today { background: #f59e0b; color: white; border-color: #f59e0b; }
+        .detail-badge-live { background: #ef4444; color: white; display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .detail-badge-recorded { background: #10b981; color: white; display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .detail-tab-btn { transition: all 0.3s; cursor: pointer; padding-bottom: 8px; }
+        .detail-tab-btn.active { border-bottom: 3px solid #667eea; color: #667eea; font-weight: bold; }
+        .detail-sidebar-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .download-btn { background: #f3f4f6; border-radius: 12px; padding: 12px; text-align: center; transition: all 0.3s; cursor: pointer; }
+        .download-btn:hover { background: #667eea; color: white; }
+        .recommendation-card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; transition: all 0.3s; cursor: pointer; }
+        .recommendation-card:hover { border-color: #667eea; box-shadow: 0 4px 12px rgba(102,126,234,0.2); }
+        .back-button { display: inline-flex; align-items: center; gap: 8px; color: #667eea; font-weight: 600; margin-bottom: 20px; cursor: pointer; }
+        .chatbot-float { position: fixed; bottom: 20px; right: 100px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: bold; z-index: 1000; transition: all 0.3s; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .chatbot-float:hover { transform: scale(1.05); }
+        .chat-window { position: fixed; bottom: 80px; right: 100px; width: 350px; height: 500px; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: none; flex-direction: column; z-index: 1001; overflow: hidden; }
+        .chat-window.open { display: flex; }
+        .chat-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f5f5f5; }
+        .message-bot { background: white; padding: 10px 15px; border-radius: 20px; margin-bottom: 10px; max-width: 85%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .message-user { background: #667eea; color: white; padding: 10px 15px; border-radius: 20px; margin-bottom: 10px; margin-left: auto; max-width: 85%; text-align: right; }
+        .chat-input-area { padding: 15px; border-top: 1px solid #ddd; display: flex; gap: 10px; background: white; }
+        .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
+        .chat-input-area button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 25px; padding: 10px 20px; cursor: pointer; }
+        .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: bold; z-index: 1000; transition: all 0.3s; }
+        .whatsapp-float:hover { transform: scale(1.05); background: #128C7E; }
+        .contact-bar { position: fixed; bottom: 20px; left: 20px; background: white; border-radius: 50px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; gap: 15px; z-index: 1000; flex-wrap: wrap; }
+        .contact-bar a { color: #4a5568; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+        .contact-bar a:hover { color: #667eea; }
+        .social-share { position: fixed; bottom: 100px; left: 20px; background: white; border-radius: 50px; padding: 8px 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; gap: 12px; z-index: 1000; }
+        .social-share a { color: #4a5568; font-size: 1.2rem; transition: all 0.3s; }
+        .social-share a:hover { transform: translateY(-3px); }
+        .social-share a:hover .fa-facebook-f { color: #1877f2; }
+        .social-share a:hover .fa-twitter { color: #1da1f2; }
+        .social-share a:hover .fa-instagram { color: #e4405f; }
+        .social-share a:hover .fa-tiktok { color: #000000; }
+        .social-share a:hover .fa-linkedin-in { color: #0077b5; }
+        @media (max-width: 768px) {
+            .contact-bar, .social-share { display: none; }
+            .chatbot-float { right: 20px; bottom: 80px; }
+            .chat-window { right: 20px; width: calc(100% - 40px); }
+            .whatsapp-float { bottom: 20px; right: 20px; left: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==================== ELEMENTOS FLOTANTES ==================== -->
+<div class="contact-bar">
+    <a href="tel:+521234567890"><i class="fas fa-phone-alt text-green-500"></i> +52 1 234 567 890</a>
+    <a href="mailto:info@eduplatform.com"><i class="fas fa-envelope text-blue-500"></i> info@eduplatform.com</a>
+    <a href="https://wa.me/521234567890" target="_blank"><i class="fab fa-whatsapp text-green-500"></i> WhatsApp</a>
+</div>
+
+<div class="social-share">
+    <a href="#" onclick="shareOnFacebook()" target="_blank"><i class="fab fa-facebook-f"></i></a>
+    <a href="#" onclick="shareOnTwitter()" target="_blank"><i class="fab fa-twitter"></i></a>
+    <a href="#" onclick="shareOnInstagram()" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="#" onclick="shareOnTikTok()" target="_blank"><i class="fab fa-tiktok"></i></a>
+    <a href="#" onclick="shareOnLinkedIn()" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+</div>
+
+<div class="chatbot-float" onclick="toggleChat()">
+    <i class="fas fa-comment-dots fa-2x"></i>
+    <span>Asistente Virtual</span>
+</div>
+
+<div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+        <span><i class="fas fa-robot mr-2"></i>Asistente de Ventas IA</span>
+        <button onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="message-bot">👋 ¡Hola! Soy tu asistente de ventas. ¿Qué curso te interesa?</div>
+    </div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+        <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<a href="https://wa.me/521234567890?text=Hola%20quisiera%20información%20sobre%20los%20cursos" class="whatsapp-float" target="_blank">
+    <i class="fab fa-whatsapp fa-2x"></i>
+    <span>¿Dudas? Escríbenos</span>
+</a>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="gradient-bg shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3">
+        <div class="flex justify-between items-center flex-wrap gap-3">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="showSection('cursos')">
+                <div class="bg-white rounded-full w-10 h-10 flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-purple-600 text-xl"></i>
+                </div>
+                <span class="text-white text-2xl font-bold">EduPlatform</span>
+            </div>
+            <div class="hidden md:flex gap-6">
+                <a class="nav-link text-white font-semibold py-2" onclick="showSection('cursos')">Cursos</a>
+                <a class="nav-link text-white/80 hover:text-white py-2" onclick="showSection('calendario')">Calendario</a>
+                <a class="nav-link text-white/80 hover:text-white py-2" onclick="showSection('empresas')">Cursos Cerrados</a>
+                <a class="nav-link text-white/80 hover:text-white py-2" onclick="showSection('proyectos')">Proyectos</a>
+                <a class="nav-link text-white/80 hover:text-white py-2" onclick="showSection('nosotros')">Nosotros</a>
+                <a id="marketingTab" class="nav-link text-white/80 hover:text-white py-2" onclick="showSection('marketing')" style="display: none;">Marketing</a>
+            </div>
+            <div id="auth-buttons" class="flex gap-3">
+                <button onclick="showLoginModal()" class="bg-white/20 hover:bg-white/30 text-white px-5 py-2 rounded-full transition"><i class="fas fa-sign-in-alt mr-2"></i>Ingresar</button>
+                <button onclick="showRegisterModal()" class="bg-white text-purple-600 hover:bg-gray-100 px-5 py-2 rounded-full font-semibold transition"><i class="fas fa-user-plus mr-2"></i>Registrarse</button>
+            </div>
+            <div id="user-info" class="hidden flex items-center gap-4">
+                <span id="user-name" class="text-white font-semibold"></span>
+                <span id="user-role-badge" class="bg-white/20 text-white text-xs px-2 py-1 rounded-full"></span>
+                <button onclick="logout()" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-full text-sm"><i class="fas fa-sign-out-alt mr-2"></i>Salir</button>
+            </div>
+        </div>
+        <div class="md:hidden flex justify-center gap-4 mt-3 flex-wrap">
+            <a class="text-white text-sm font-semibold" onclick="showSection('cursos')">Cursos</a>
+            <a class="text-white/80 text-sm" onclick="showSection('calendario')">Calendario</a>
+            <a class="text-white/80 text-sm" onclick="showSection('empresas')">Empresas</a>
+            <a class="text-white/80 text-sm" onclick="showSection('proyectos')">Proyectos</a>
+            <a class="text-white/80 text-sm" onclick="showSection('nosotros')">Nosotros</a>
+            <a id="marketingTabMobile" class="text-white/80 text-sm" onclick="showSection('marketing')" style="display: none;">Marketing</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<section id="heroSection" class="gradient-bg text-white py-16 md:py-20">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4 animate-fadeInUp">Transforma tu futuro con nosotros</h1>
+        <p class="text-lg md:text-xl mb-8 opacity-90">Cursos online, certificaciones DC3, consultoría empresarial y más.</p>
+        <div class="flex justify-center gap-4 flex-wrap">
+            <button onclick="showSection('cursos')" class="bg-white text-purple-600 px-6 md:px-8 py-3 rounded-full font-semibold hover:shadow-xl transition"><i class="fas fa-arrow-right ml-2"></i> Ver Cursos</button>
+            <button onclick="showSection('empresas')" class="bg-transparent border-2 border-white px-6 md:px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-purple-600 transition">Para Empresas</button>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== CURSOS ==================== -->
+<section id="cursosSection" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold gradient-text mb-4">Nuestros Cursos</h2>
+            <p class="text-gray-600 text-lg">Explora nuestra selección de cursos y certificaciones</p>
+        </div>
+        <div class="max-w-md mx-auto mb-8">
+            <input type="text" id="searchInput" placeholder="Buscar cursos..." class="w-full border border-gray-300 rounded-full py-3 px-5 pl-12 focus:outline-none focus:border-purple-500">
+        </div>
+        <div id="coursesList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="text-center py-12 col-span-3"><i class="fas fa-spinner fa-spin text-4xl text-purple-500"></i><p class="mt-4 text-gray-500">Cargando cursos...</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== CALENDARIO (SIMPLIFICADO) ==================== -->
+<!-- ==================== SECCIÓN CALENDARIO ==================== -->
+<section id="calendarioSection" class="py-16 bg-white hidden">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold gradient-text mb-4">Calendario de Cursos</h2>
+            <p class="text-gray-600 text-lg">Próximas fechas de cursos en vivo</p>
+        </div>
+        <div class="grid lg:grid-cols-4 gap-8">
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-24">
+                    <h3 class="font-bold text-lg mb-4"><i class="fas fa-filter text-purple-500 mr-2"></i>Filtrar por mes</h3>
+                    <div id="monthFilters" class="space-y-2"></div>
+                </div>
+            </div>
+            <div class="lg:col-span-3">
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div id="currentMonthTitle"></div>
+                    <div id="calendarGrid" class="overflow-x-auto"></div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg p-6 mt-6">
+                    <div id="calendarEvents" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>>
+<!-- ==================== EMPRESAS (SIMPLIFICADO) ==================== -->
+<!-- ==================== SECCIÓN CURSOS CERRADOS ==================== -->
+<section id="empresasSection" class="py-16 bg-white hidden">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold gradient-text mb-4">Cursos Cerrados para Empresas</h2>
+            <p class="text-gray-600 text-lg">Capacitación in-company, personalizada para tu equipo</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-8">
+                <i class="fas fa-building text-4xl text-purple-500 mb-4"></i>
+                <h3 class="text-2xl font-bold mb-2">¿Qué es un curso cerrado?</h3>
+                <p class="text-gray-600 mb-4">Capacitación diseñada específicamente para las necesidades de tu empresa.</p>
+                <ul class="space-y-2 text-gray-600">
+                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Contenido adaptado</li>
+                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Fechas flexibles</li>
+                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Certificación DC3</li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <h3 class="text-2xl font-bold gradient-text mb-4">Solicita información</h3>
+                <form id="empresaForm" onsubmit="sendEmpresaRequest(event)">
+                    <input type="text" id="empresaNombre" placeholder="Empresa" class="w-full border rounded-lg p-3 mb-3">
+                    <input type="text" id="empresaContacto" placeholder="Contacto" class="w-full border rounded-lg p-3 mb-3">
+                    <input type="email" id="empresaEmail" placeholder="Correo" class="w-full border rounded-lg p-3 mb-3">
+                    <input type="tel" id="empresaTelefono" placeholder="Teléfono" class="w-full border rounded-lg p-3 mb-3">
+                    <select id="empresaCurso" class="w-full border rounded-lg p-3 mb-3">
+                        <option>CQI-8 Auditoría</option><option>Supply Chain</option><option>ISO 9001</option><option>NOM-035</option><option>TPM</option>
+                    </select>
+                    <textarea id="empresaMensaje" rows="3" placeholder="Mensaje" class="w-full border rounded-lg p-3 mb-4"></textarea>
+                    <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg">Solicitar cotización</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ==================== PROYECTOS (SIMPLIFICADO) ==================== -->
+<!-- ==================== SECCIÓN PROYECTOS ==================== -->
+<section id="proyectosSection" class="py-16 bg-white hidden">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold gradient-text mb-4">Proyectos y Consultoría</h2>
+            <p class="text-gray-600 text-lg">Implementación de sistemas de gestión</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6 card-hover"><i class="fas fa-certificate text-3xl text-purple-500 mb-3"></i><h3 class="text-xl font-bold">Sistemas de Gestión</h3><p class="text-gray-600">ISO 9001:2015</p><button onclick="showProjectInquiry('Sistemas de Gestión')" class="mt-3 gradient-bg text-white px-4 py-2 rounded-full text-sm">Info</button></div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 card-hover"><i class="fas fa-industry text-3xl text-purple-500 mb-3"></i><h3 class="text-xl font-bold">TPM</h3><p class="text-gray-600">Mantenimiento Productivo</p><button onclick="showProjectInquiry('TPM')" class="mt-3 gradient-bg text-white px-4 py-2 rounded-full text-sm">Info</button></div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 card-hover"><i class="fas fa-heartbeat text-3xl text-purple-500 mb-3"></i><h3 class="text-xl font-bold">NOM-035</h3><p class="text-gray-600">Riesgo Psicosocial</p><button onclick="showProjectInquiry('NOM-035')" class="mt-3 gradient-bg text-white px-4 py-2 rounded-full text-sm">Info</button></div>
+        </div>
+    </div>
+</section>
+<!-- ==================== NOSOTROS (SIMPLIFICADO) ==================== -->
+<!-- ==================== SECCIÓN NOSOTROS ==================== -->
+<section id="nosotrosSection" class="py-16 bg-white hidden">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold gradient-text mb-4">Nosotros</h2>
+            <p class="text-gray-600">Conoce nuestra historia</p>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-12">
+            <div>
+                <h3 class="text-2xl font-bold mb-4">¿Quiénes somos?</h3>
+                <p class="text-gray-600">Empresa dedicada a la capacitación y consultoría, con más de 10 años de experiencia.</p>
+                <h3 class="text-2xl font-bold mt-6 mb-4">Misión</h3>
+                <p class="text-gray-600">Impulsar el desarrollo profesional y empresarial.</p>
+                <h3 class="text-2xl font-bold mt-6 mb-4">Visión</h3>
+                <p class="text-gray-600">Ser la plataforma de referencia en Latinoamérica.</p>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold mb-4">Valores</h3>
+                <div class="space-y-4">
+                    <div class="flex gap-3"><i class="fas fa-star text-purple-500"></i><div><span class="font-bold">Excelencia:</span> Mejora continua</div></div>
+                    <div class="flex gap-3"><i class="fas fa-handshake text-purple-500"></i><div><span class="font-bold">Compromiso:</span> Con los clientes</div></div>
+                    <div class="flex gap-3"><i class="fas fa-lightbulb text-purple-500"></i><div><span class="font-bold">Innovación:</span> Actualización constante</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ==================== MARKETING (SIMPLIFICADO) ==================== -->
+<section id="marketingSection" class="py-16 bg-white hidden">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold gradient-text mb-4">Herramientas de Marketing</h2>
+            <p class="text-gray-600 text-lg">Genera flyers, videos y comparte en redes sociales</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6"><h3 class="text-xl font-bold mb-4"><i class="fas fa-images text-purple-500 mr-2"></i>Generador de Flyers</h3><select id="flyerCourseSelect" class="w-full border rounded-lg p-2 mb-3"><option>Selecciona un curso</option></select><button onclick="generateFlyer()" class="w-full gradient-bg text-white py-2 rounded-lg">Generar Flyer</button><div id="flyerPreview" class="mt-4 hidden"></div></div>
+            <div class="bg-white rounded-2xl shadow-lg p-6"><h3 class="text-xl font-bold mb-4"><i class="fas fa-share-alt text-purple-500 mr-2"></i>Compartir en Redes</h3><select id="shareCourseSelect" class="w-full border rounded-lg p-2 mb-3"><option>Selecciona un curso</option></select><div class="flex flex-wrap gap-3"><button onclick="shareOnFacebook()" class="bg-[#1877f2] text-white px-4 py-2 rounded-full">Facebook</button><button onclick="shareOnTwitter()" class="bg-[#1da1f2] text-white px-4 py-2 rounded-full">Twitter</button><button onclick="shareOnLinkedIn()" class="bg-[#0077b5] text-white px-4 py-2 rounded-full">LinkedIn</button><button onclick="shareOnWhatsApp()" class="bg-[#25D366] text-white px-4 py-2 rounded-full">WhatsApp</button></div></div>
+        </div>
+                <!-- Compartir Video en Redes Sociales (mejorado) -->
+        <div class="mt-8 bg-white rounded-2xl shadow-lg p-6">
+            <h3 class="text-xl font-bold mb-4"><i class="fas fa-share-alt text-purple-500 mr-2"></i>Compartir Video en Redes Sociales</h3>
+            <p class="text-gray-600 mb-4">Selecciona un curso y comparte su video promocional</p>
+
+            <select id="shareVideoSelect" class="w-full border rounded-lg p-2 mb-3">
+                <option value="">Selecciona un curso con video</option>
+            </select>
+
+            <div id="videoPreviewShare" class="hidden mb-3">
+                <video id="shareVideoPreview" controls class="w-full rounded-lg max-h-40"></video>
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+                <button onclick="compartirVideoFacebook()" class="bg-[#1877f2] hover:bg-[#145dbf] text-white px-4 py-2 rounded-full transition">
+                    <i class="fab fa-facebook-f mr-2"></i>Facebook
+                </button>
+                <button onclick="compartirVideoTwitter()" class="bg-[#1da1f2] hover:bg-[#0d8bd9] text-white px-4 py-2 rounded-full transition">
+                    <i class="fab fa-twitter mr-2"></i>Twitter
+                </button>
+                <button onclick="compartirVideoLinkedIn()" class="bg-[#0077b5] hover:bg-[#005e8c] text-white px-4 py-2 rounded-full transition">
+                    <i class="fab fa-linkedin-in mr-2"></i>LinkedIn
+                </button>
+                <button onclick="compartirVideoWhatsApp()" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-2 rounded-full transition">
+                    <i class="fab fa-whatsapp mr-2"></i>WhatsApp
+                </button>
+                <button onclick="compartirVideoTikTok()" class="bg-[#000000] hover:bg-[#333333] text-white px-4 py-2 rounded-full transition">
+                    <i class="fab fa-tiktok mr-2"></i>TikTok
+                </button>
+            </div>
+        </div>
+        <div class="mt-8 bg-white rounded-2xl shadow-lg p-6">
+            <h3 class="text-xl font-bold mb-4"><i class="fas fa-cloud-upload-alt text-purple-500 mr-2"></i>Subir Video Promocional</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div><select id="uploadCourseSelect" class="w-full border rounded-lg p-2 mb-3"><option>Selecciona un curso</option></select></div>
+                <div><input type="file" id="videoFileInput" accept="video/mp4" class="w-full border rounded-lg p-2"></div>
+            </div>
+            <button onclick="subirVideoPromocional()" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg">Subir Video</button>
+            <button onclick="eliminarVideoPromocional()" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg mt-2">Eliminar Video Actual</button>
+            <div id="uploadPreview" class="mt-4 hidden">Subiendo...</div>
+            <div id="uploadSuccess" class="mt-4 hidden">✅ Subido</div>
+            <div class="mt-8"><h3 class="text-xl font-bold mb-4">Videos Subidos</h3><div id="videosListContainer" class="space-y-3">Cargando...</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== DETALLE CURSO ==================== -->
+<div id="courseDetailPage" class="hidden"></div>
+
+<!-- ==================== MODALES ==================== -->
+<div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div class="bg-white rounded-2xl p-8 w-96"><h2 class="text-2xl font-bold mb-4">Iniciar Sesión</h2><input type="email" id="login-email" class="w-full border rounded-lg p-3 mb-3"><input type="password" id="login-password" class="w-full border rounded-lg p-3 mb-4"><button onclick="login()" class="w-full gradient-bg text-white py-2 rounded-lg">Ingresar</button><p class="text-center mt-4"><button onclick="showRegisterModal()" class="text-purple-600">Regístrate</button></p></div></div>
+<div id="registerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div class="bg-white rounded-2xl p-8 w-96"><h2 class="text-2xl font-bold mb-4">Crear cuenta</h2><input type="text" id="register-name" class="w-full border rounded-lg p-3 mb-3"><input type="email" id="register-email" class="w-full border rounded-lg p-3 mb-3"><input type="password" id="register-password" class="w-full border rounded-lg p-3 mb-4"><button onclick="register()" class="w-full gradient-bg text-white py-2 rounded-lg">Registrarse</button><p class="text-center mt-4"><button onclick="showLoginModal()" class="text-purple-600">Inicia sesión</button></p></div></div>
+<div id="projectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div class="bg-white rounded-2xl p-8 w-96">...</div></div>
+
+<footer class="bg-gray-900 text-white py-12 mt-8"><div class="max-w-7xl mx-auto px-4 text-center"><p>&copy; 2026 EduPlatform. Todos los derechos reservados.</p></div></footer>
+
+<script>
+    // ==================== VARIABLES GLOBALES ====================
+    let token = localStorage.getItem('token');
+    let allCourses = [];
+    let currentUserRole = null;
+    let currentCalendarMonth = 3;
+    let listaVideos = [];
+
+    const courseEvents = [
+    { title: 'CQI-8 Auditoría en Capas', date: '2026-04-06', type: 'live' },
+    { title: 'Supply Chain Management', date: '2026-04-07', type: 'live' },
+    { title: 'ISO 9001 Auditor Interno', date: '2026-04-14', type: 'live' },
+    { title: 'Python Avanzado', date: '2026-05-10', type: 'live' },
+    { title: 'Data Science', date: '2026-05-17', type: 'live' },
+    { title: 'TPM Mantenimiento', date: '2026-06-05', type: 'live' }
+];
+
+    // ==================== FUNCIONES DE NAVEGACIÓN ====================
+        // ==================== FUNCIONES DE NAVEGACIÓN ====================
+    function showSection(section) {
+        $('#heroSection, #cursosSection, #calendarioSection, #empresasSection, #proyectosSection, #nosotrosSection, #marketingSection').addClass('hidden');
+        $('#courseDetailPage').addClass('hidden');
+        if (section === 'cursos') {
+            $('#cursosSection').removeClass('hidden');
+        }
+        else if (section === 'marketing') {
+            if (currentUserRole !== 'admin') { alert('Acceso solo administradores'); return; }
+            $('#marketingSection').removeClass('hidden');
+            updateCourseSelects();
+            cargarListaVideos();
+        }
+        else if (section === 'calendario') {
+            $('#calendarioSection').removeClass('hidden');
+            generateCalendar();   // ← LÍNEA AGREGADA
+        }
+        else {
+            $('#' + section + 'Section').removeClass('hidden');
+        }
+    }
+
+    function updateMarketingTabVisibility() {
+        if (currentUserRole === 'admin') {
+            $('#marketingTab, #marketingTabMobile').show();
+            $('#user-role-badge').text('ADMIN').show();
+        } else {
+            $('#marketingTab, #marketingTabMobile').hide();
+            $('#user-role-badge').hide();
+        }
+    }
+
+    function updateCourseSelects() {
+        let options = '<option value="">Selecciona un curso</option>';
+        allCourses.forEach(c => options += `<option value="${c.id}">${c.title} - $${c.price}</option>`);
+        $('#flyerCourseSelect, #shareCourseSelect, #uploadCourseSelect').html(options);
+        actualizarSelectorVideosCompartir();  // ← NUEVA LÍNEA
+    }
+
+    // ==================== CURSOS ====================
+    function displayCourses(courses) {
+        const container = $('#coursesList');
+        container.empty();
+        if (!courses || courses.length === 0) { container.html('<div class="text-center py-12">No hay cursos disponibles</div>'); return; }
+        courses.forEach(course => {
+            const isLive = course.course_type === 'live';
+            const badge = isLive ? '🔴 EN VIVO' : '📹 GRABADO';
+            const badgeClass = isLive ? 'badge-live' : 'badge-recorded';
+            container.append(`
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="${badgeClass}" style="height:4px"></div>
+                    <div class="p-5">
+                        <div class="flex justify-between mb-3">
+                            <span class="${badgeClass} text-xs px-3 py-1 rounded-full">${badge}</span>
+                            <i class="fas fa-star text-yellow-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">${course.title}</h3>
+                        <p class="text-gray-500 text-sm mb-3">${course.description?.substring(0,100)||'Sin descripción'}...</p>
+                        <div class="flex justify-between items-center mt-4 pt-3 border-t">
+                            <span class="text-2xl font-bold gradient-text">$${course.price}</span>
+                            <button onclick="alert('Detalle del curso: ${course.title}')" class="gradient-bg text-white px-5 py-2 rounded-full">Ver detalles</button>
+                        </div>
+                    </div>
+                </div>
+            `);
+        });
+    }
+
+    async function loadCourses() {
+        try {
+            const r = await fetch('/courses/');
+            if (r.ok) {
+                allCourses = await r.json();
+                actualizarSelectorVideosCompartir();
+                displayCourses(allCourses);
+                updateCourseSelects();
+            } else $('#coursesList').html('<p class="text-red-500">Error al cargar cursos</p>');
+        } catch(e) { $('#coursesList').html('<p class="text-red-500">Error de conexión</p>'); }
+    }
+
+    // ==================== AUTENTICACIÓN ====================
+    async function register() {
+        const n=$('#register-name').val(), e=$('#register-email').val(), p=$('#register-password').val();
+        const r=await fetch('/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,password:p})});
+        if(r.ok){ alert('Registro exitoso'); closeRegisterModal(); showLoginModal(); } else alert('Error');
+    }
+    async function login() {
+        const e=$('#login-email').val(), p=$('#login-password').val();
+        const fd=new URLSearchParams(); fd.append('username',e); fd.append('password',p);
+        const r=await fetch('/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:fd});
+        if(r.ok){
+            const d=await r.json();
+            token=d.access_token; localStorage.setItem('token',token); localStorage.setItem('user_name',d.user_name);
+            const userRes=await fetch('/users/me',{headers:{'Authorization':`Bearer ${token}`}});
+            if(userRes.ok){ const u=await userRes.json(); currentUserRole=u.role; localStorage.setItem('user_role',currentUserRole); }
+            else currentUserRole='student';
+            updateMarketingTabVisibility();
+            closeLoginModal();
+            $('#auth-buttons').hide(); $('#user-info').removeClass('hidden');
+            $('#user-name').text(`Hola, ${d.user_name}`);
+            if(currentUserRole==='admin') $('#user-role-badge').text('ADMIN').show();
+            alert('✅ Sesión iniciada');
+            if(currentUserRole==='admin') cargarListaVideos();
+        } else alert('Error de credenciales');
+    }
+    function logout(){ localStorage.clear(); token=null; currentUserRole=null; location.reload(); }
+    function showLoginModal(){ $('#loginModal').removeClass('hidden'); }
+    function closeLoginModal(){ $('#loginModal').addClass('hidden'); }
+    function showRegisterModal(){ $('#registerModal').removeClass('hidden'); }
+    function closeRegisterModal(){ $('#registerModal').addClass('hidden'); }
+
+    // ==================== MARKETING: FLYERS ====================
+    async function generateFlyer() {
+        const courseId=$('#flyerCourseSelect').val();
+        if(!courseId) return alert('Selecciona un curso');
+        if(!token) return alert('Debes iniciar sesión');
+        const r=await fetch(`/generate-flyer/${courseId}`,{headers:{'Authorization':`Bearer ${token}`}});
+        if(r.ok){
+            const blob=await r.blob();
+            const url=URL.createObjectURL(blob);
+            const a=document.createElement('a'); a.href=url; a.download=`flyer_${courseId}.png`; a.click();
+            URL.revokeObjectURL(url);
+            alert('Flyer descargado');
+        } else alert('Error');
+    }
+    function shareOnFacebook(){ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href), '_blank'); }
+    function shareOnTwitter(){ window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent('Mira estos cursos')+'&url='+encodeURIComponent(location.href), '_blank'); }
+    function shareOnLinkedIn(){ window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(location.href), '_blank'); }
+    function shareOnWhatsApp(){ window.open('https://wa.me/?text='+encodeURIComponent('Te recomiendo estos cursos: '+location.href), '_blank'); }
+    function shareOnInstagram(){ alert('Comparte este enlace: '+location.href); }
+    function shareOnTikTok(){ alert('Comparte este enlace: '+location.href); }
+    function toggleChat(){ $('#chatWindow').toggleClass('open'); }
+    function sendChatMessage(){
+        const msg=$('#chatInput').val().trim();
+        if(!msg) return;
+        $('#chatMessages').append(`<div class="message-user">${msg}</div>`);
+        $('#chatInput').val('');
+        $('#chatMessages').append(`<div class="message-bot">Gracias por tu consulta. Un asesor te contactará.</div>`);
+        $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+    }
+    // ==================== COMPARTIR VIDEOS EN REDES SOCIALES ====================
+
+//let cursoSeleccionadoParaCompartir = null;
+
+function actualizarSelectorVideosCompartir() {
+    const select = $('#shareVideoSelect');
+    select.empty();
+    select.append('<option value="">Selecciona un curso con video</option>');
+
+    if (!listaVideos || listaVideos.length === 0) {
+        select.append('<option disabled>No hay videos subidos</option>');
+        return;
+    }
+
+    listaVideos.forEach(video => {
+        select.append(`<option value="${video.id}" data-video="${video.video_url}" data-title="${escapeHtml(video.title)}">${escapeHtml(video.title)}</option>`);
+    });
+}
+
+$('#shareVideoSelect').on('change', function() {
+    const selectedOption = $(this).find(':selected');
+    const videoUrl = select.edOption.data('video');
+    const title = selectedOption.data('title');
+
+    if (videoUrl) {
+        cursoSeleccionadoParaCompartir = {
+            id: $(this).val(),
+            title: title,
+            video_url: videoUrl
+        };
+        $('#shareVideoPreview').attr('src', videoUrl);
+        $('#videoPreviewShare').removeClass('hidden');
+    } else {
+        $('#videoPreviewShare').addClass('hidden');
+        cursoSeleccionadoParaCompartir = null;
+    }
+});
+
+// ==================== COMPARTIR VIDEOS EN REDES SOCIALES ====================
+
+function compartirVideoFacebook() {
+    const selectedId = $('#shareVideoSelect').val();
+    if (!selectedId) {
+        alert('Selecciona un curso primero');
+        return;
+    }
+    const video = listaVideos.find(v => v.id == selectedId);
+    if (!video || !video.video_url) {
+        alert('No se encontró el video');
+        return;
+    }
+    const fullUrl = window.location.origin + video.video_url;
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}`, '_blank');
+}
+
+function compartirVideoTwitter() {
+    const selectedId = $('#shareVideoSelect').val();
+    if (!selectedId) {
+        alert('Selecciona un curso primero');
+        return;
+    }
+    const video = listaVideos.find(v => v.id == selectedId);
+    if (!video || !video.video_url) return;
+    const fullUrl = window.location.origin + video.video_url;
+    const text = encodeURIComponent(`🎓 ${video.title} - Aprende con nosotros`);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(fullUrl)}`, '_blank');
+}
+
+function compartirVideoLinkedIn() {
+    const selectedId = $('#shareVideoSelect').val();
+    if (!selectedId) {
+        alert('Selecciona un curso primero');
+        return;
+    }
+    const video = listaVideos.find(v => v.id == selectedId);
+    if (!video || !video.video_url) return;
+    const fullUrl = window.location.origin + video.video_url;
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fullUrl)}`, '_blank');
+}
+
+function compartirVideoWhatsApp() {
+    const selectedId = $('#shareVideoSelect').val();
+    if (!selectedId) {
+        alert('Selecciona un curso primero');
+        return;
+    }
+    const video = listaVideos.find(v => v.id == selectedId);
+    if (!video || !video.video_url) return;
+    const fullUrl = window.location.origin + video.video_url;
+    const text = encodeURIComponent(`🎓 ${video.title}\n📹 Mira el video promocional:\n${fullUrl}`);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+function compartirVideoTikTok() {
+    const selectedId = $('#shareVideoSelect').val();
+    if (!selectedId) {
+        alert('Selecciona un curso primero');
+        return;
+    }
+    const video = listaVideos.find(v => v.id == selectedId);
+    if (!video || !video.video_url) return;
+    const fullUrl = window.location.origin + video.video_url;
+    const mensaje = `🎓 ${video.title}\n✨ Aprende desde casa\n✅ Certificación incluida\n📹 ${fullUrl}`;
+    alert(`📱 Para compartir en TikTok:\n\nCopia este texto:\n\n${mensaje}`);
+    window.open('https://www.tiktok.com/upload', '_blank');
+}
+
+    // ==================== VIDEOS ====================
+    async function subirVideoPromocional() {
+        const courseId=$('#uploadCourseSelect').val();
+        const file=$('#videoFileInput')[0].files[0];
+        if(!courseId) return alert('Selecciona un curso');
+        if(!file) return alert('Selecciona un archivo');
+        if(!token) return alert('Inicia sesión');
+        const formData=new FormData();
+        formData.append('video',file);
+        const r=await fetch(`/courses/upload_video/${courseId}`,{method:'POST',headers:{'Authorization':`Bearer ${token}`},body:formData});
+        if(r.ok){
+            alert('Video subido');
+            cargarListaVideos();
+        } else alert('Error');
+    }
+    async function eliminarVideoPromocional(){
+        const courseId=$('#uploadCourseSelect').val();
+        if(!courseId) return alert('Selecciona un curso');
+        if(!confirm('¿Eliminar?')) return;
+        const r=await fetch(`/courses/delete_video/${courseId}`,{method:'DELETE',headers:{'Authorization':`Bearer ${token}`}});
+        if(r.ok){ alert('Eliminado'); cargarListaVideos(); }
+        else alert('Error');
+    }
+    async function cargarListaVideos() {
+    if (!token || localStorage.getItem('user_role') !== 'admin') return;
+    try {
+        const r = await fetch('/courses/videos_list', { headers: { 'Authorization': `Bearer ${token}` } });
+        if (r.ok) {
+            const videos = await r.json();
+            listaVideos = videos;  // Guardar los videos para usarlos después
+            actualizarSelectorVideosCompartir();
+            const cont = $('#videosListContainer');
+            cont.empty();
+            if (!videos.length) { cont.html('<p class="text-gray-500">No hay videos subidos</p>'); return; }
+            videos.forEach(v => {
+                cont.append(`
+                    <div class="border rounded-lg p-4 mb-3">
+                        <div class="flex flex-wrap gap-4 items-start">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-lg">${escapeHtml(v.title)}</h4>
+                                <p class="text-sm text-gray-500">ID: ${v.id}</p>
+                                <div class="mt-2 flex gap-2">
+                                    <button onclick="eliminarVideoDesdeLista(${v.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-sm">
+                                        <i class="fas fa-trash-alt mr-1"></i>Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                            <video src="${v.video_url}" controls class="w-40 h-24 object-cover rounded-lg"></video>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        $('#videosListContainer').html('<p class="text-red-500">Error al cargar videos</p>');
+    }
+}
+    async function eliminarVideoDesdeLista(courseId){
+        if(!confirm('Eliminar?')) return;
+        const r=await fetch(`/courses/delete_video/${courseId}`,{method:'DELETE',headers:{'Authorization':`Bearer ${token}`}});
+        if(r.ok){ alert('Eliminado'); cargarListaVideos(); }
+        else alert('Error');
+    }
+
+    function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+// Funciones para calendario
+function generateCalendar() {
+    const year = 2026;
+    const month = currentCalendarMonth;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+    // Mostrar título con botones
+    $('#currentMonthTitle').html(`
+        <div class="flex justify-between items-center mb-6">
+            <button onclick="changeMonth(-1)" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full">
+                <i class="fas fa-chevron-left"></i> Mes anterior
+            </button>
+            <h3 class="text-2xl font-bold gradient-text">${monthNames[month]} ${year}</h3>
+            <button onclick="changeMonth(1)" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full">
+                Mes siguiente <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    `);
+
+    // Días de la semana
+    let gridHtml = '<div class="grid grid-cols-7 gap-2 mb-2">';
+    gridHtml += '<div class="text-center font-bold text-purple-600">Dom</div>';
+    gridHtml += '<div class="text-center font-bold text-purple-600">Lun</div>';
+    gridHtml += '<div class="text-center font-bold text-purple-600">Mar</div>';
+    gridHtml += '<div class="text-center font-bold text-purple-600">Mié</div>';
+    gridHtml += '<div class="text-center font-bold text-purple-600">Jue</div>';
+    gridHtml += '<div class="text-center font-bold text-purple-600">Vie</div>';
+    gridHtml += '<div class="text-center font-bold text-purple-600">Sáb</div>';
+    gridHtml += '</div><div class="grid grid-cols-7 gap-2">';
+
+    // Días vacíos
+    for (let i = 0; i < firstDay; i++) {
+        gridHtml += `<div class="calendar-day bg-gray-50"></div>`;
+    }
+
+    // Días del mes
+    for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const hasEvent = courseEvents.some(e => e.date === dateStr);
+        const dayEvents = courseEvents.filter(e => e.date === dateStr);
+        let eventHtml = '';
+        if (dayEvents.length > 0) {
+            eventHtml = `<div class="text-xs mt-1">${dayEvents.map(e => `<div class="bg-white/20 rounded px-1 py-0.5 text-[10px] truncate">${e.title.substring(0,12)}</div>`).join('')}</div>`;
+        }
+        gridHtml += `<div class="calendar-day ${hasEvent ? 'has-course' : ''}" style="min-height: 80px; cursor: pointer;" onclick="showDayEvents('${dateStr}')">
+                        <div class="font-bold">${d}</div>
+                        ${eventHtml}
+                    </div>`;
+    }
+
+    gridHtml += '</div>';
+    $('#calendarGrid').html(gridHtml);
+
+    // Mostrar eventos del mes
+    const currentEvents = courseEvents.filter(e => {
+        const eventMonth = parseInt(e.date.split('-')[1]) - 1;
+        return eventMonth === month;
+    });
+
+    let eventsHtml = '<h3 class="font-bold text-lg mb-3">📅 Próximos cursos este mes</h3>';
+    if (currentEvents.length === 0) {
+        eventsHtml += '<p class="text-gray-500">No hay cursos programados para este mes</p>';
+    } else {
+        currentEvents.forEach(e => {
+            const dateObj = new Date(e.date);
+            eventsHtml += `
+                <div class="bg-gray-50 rounded-lg p-3 flex justify-between items-center hover:shadow-md transition cursor-pointer" onclick="alert('Curso: ${e.title}')">
+                    <div><i class="fas fa-calendar-alt text-purple-500 mr-2"></i>${e.title}</div>
+                    <div class="text-sm text-gray-500">${dateObj.toLocaleDateString('es-ES', { day:'numeric', month:'long' })}</div>
+                </div>
+            `;
+        });
+    }
+    $('#calendarEvents').html(eventsHtml);
+}
+
+function changeMonth(delta) {
+    currentCalendarMonth = (currentCalendarMonth + delta + 12) % 12;
+    generateCalendar();
+}
+
+function showDayEvents(dateStr) {
+    const events = courseEvents.filter(e => e.date === dateStr);
+    if (events.length === 0) {
+        alert(`No hay cursos para el ${new Date(dateStr).toLocaleDateString('es-ES')}`);
+    } else {
+        alert(`📅 Cursos el ${new Date(dateStr).toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' })}:\n\n${events.map(e => `• ${e.title}`).join('\n')}`);
+    }
+}
+function changeMonth(delta) { currentCalendarMonth = (currentCalendarMonth + delta + 12) % 12; generateCalendar(); }
+function showProjectInquiry(type){ alert(`Solicitar info de ${type}`); }
+function sendEmpresaRequest(e){ e.preventDefault(); alert('Solicitud enviada'); }
+    // ==================== INICIO ====================
+    $(document).ready(function() {
+        const savedRole = localStorage.getItem('user_role');
+        if (token) {
+            $('#auth-buttons').hide();
+            $('#user-info').removeClass('hidden');
+            $('#user-name').text(`Hola, ${localStorage.getItem('user_name') || 'Usuario'}`);
+            if (savedRole) {
+                currentUserRole = savedRole;
+                updateMarketingTabVisibility();
+                if(currentUserRole==='admin') $('#user-role-badge').text('ADMIN').show();
+            } else {
+                fetch('/users/me', {headers: { 'Authorization': `Bearer ${token}` }})
+                    .then(r=>r.json())
+                    .then(userData=>{
+                        currentUserRole=userData.role;
+                        localStorage.setItem('user_role',currentUserRole);
+                        updateMarketingTabVisibility();
+                        if(currentUserRole==='admin') $('#user-role-badge').text('ADMIN').show();
+                        if(currentUserRole==='admin') cargarListaVideos();
+                    })
+                    .catch(()=>{ currentUserRole='student'; updateMarketingTabVisibility(); });
+            }
+        } else { updateMarketingTabVisibility(); }
+        loadCourses();
+    });
+</script>
+</body>
+</html>
