@@ -53,7 +53,7 @@ os.makedirs(VIDEOS_DIR, exist_ok=True)
 # === RUTAS DE LA APLICACIÓN ===
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": Request(scope=request.scope)})
 
 
 @app.get("/")
