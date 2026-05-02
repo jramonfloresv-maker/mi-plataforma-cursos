@@ -52,9 +52,17 @@ os.makedirs(VIDEOS_DIR, exist_ok=True)
 
 # === RUTAS DE LA APLICACIÓN ===
 
+#@app.get("/dashboard", response_class=HTMLResponse)
+#async def dashboard(request: Request):
+#    return templates.TemplateResponse("index.html", {"request": None})
+
 @app.get("/dashboard", response_class=HTMLResponse)
-async def dashboard(request: Request):
-    return templates.TemplateResponse("index.html", {"request": None})
+async def dashboard():
+    # Lee el archivo HTML directamente
+    template_path = os.path.join("backend", "app", "templates", "index.html")
+    with open(template_path, "r", encoding="utf-8") as f:
+        html_content = f.read()
+    return HTMLResponse(content=html_content)
 
 
 @app.get("/")
