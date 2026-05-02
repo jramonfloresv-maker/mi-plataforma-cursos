@@ -348,8 +348,55 @@
 <div id="courseDetailPage" class="hidden"></div>
 
 <!-- ==================== MODALES ==================== -->
-<div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div class="bg-white rounded-2xl p-8 w-96"><h2 class="text-2xl font-bold mb-4">Iniciar Sesión</h2><input type="email" id="login-email" class="w-full border rounded-lg p-3 mb-3"><input type="password" id="login-password" class="w-full border rounded-lg p-3 mb-4"><button onclick="login()" class="w-full gradient-bg text-white py-2 rounded-lg">Ingresar</button><p class="text-center mt-4"><button onclick="showRegisterModal()" class="text-purple-600">Regístrate</button></p></div></div>
-<div id="registerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div class="bg-white rounded-2xl p-8 w-96"><h2 class="text-2xl font-bold mb-4">Crear cuenta</h2><input type="text" id="register-name" class="w-full border rounded-lg p-3 mb-3"><input type="email" id="register-email" class="w-full border rounded-lg p-3 mb-3"><input type="password" id="register-password" class="w-full border rounded-lg p-3 mb-4"><button onclick="register()" class="w-full gradient-bg text-white py-2 rounded-lg">Registrarse</button><p class="text-center mt-4"><button onclick="showLoginModal()" class="text-purple-600">Inicia sesión</button></p></div></div>
+<div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-8 w-96 max-w-[90%]">
+        <h2 class="text-2xl font-bold gradient-text mb-4">Iniciar Sesión</h2>
+
+        <div class="mb-3">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Correo electrónico</label>
+            <input type="email" id="login-email" placeholder="tucorreo@ejemplo.com" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
+            <input type="password" id="login-password" placeholder="Tu contraseña" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
+        </div>
+
+        <button onclick="login()" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:shadow-lg transition">Iniciar Sesión</button>
+
+        <p class="text-center mt-4 text-gray-600">
+            ¿No tienes cuenta?
+            <button onclick="showRegisterModal()" class="text-purple-600 font-semibold">Regístrate</button>
+        </p>
+    </div>
+</div>
+<div id="registerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-8 w-96 max-w-[90%]">
+        <h2 class="text-2xl font-bold gradient-text mb-4">Crear cuenta</h2>
+
+        <div class="mb-3">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Nombre completo</label>
+            <input type="text" id="register-name" placeholder="Ej: Jesús Ramón Flores" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
+        </div>
+
+        <div class="mb-3">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Correo electrónico</label>
+            <input type="email" id="register-email" placeholder="tucorreo@ejemplo.com" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
+            <input type="password" id="register-password" placeholder="Mínimo 6 caracteres" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
+        </div>
+
+        <button onclick="register()" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:shadow-lg transition">Registrarse</button>
+
+        <p class="text-center mt-4 text-gray-600">
+            ¿Ya tienes cuenta?
+            <button onclick="showLoginModal()" class="text-purple-600 font-semibold">Inicia sesión</button>
+        </p>
+    </div>
+</div>
 <div id="projectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div class="bg-white rounded-2xl p-8 w-96">...</div></div>
 
 <footer class="bg-gray-900 text-white py-12 mt-8"><div class="max-w-7xl mx-auto px-4 text-center"><p>&copy; 2026 EduPlatform. Todos los derechos reservados.</p></div></footer>
