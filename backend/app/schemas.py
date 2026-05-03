@@ -32,6 +32,13 @@ class CourseBase(BaseModel):
     description: str
     price: float
     thumbnail: Optional[str] = None
+    objetivo: Optional[str] = None
+    contenido_detallado: Optional[str] = None
+    requisitos: Optional[str] = None
+    certificacion_incluida: Optional[bool] = True
+    dc3_disponible: Optional[bool] = False
+    audiencia: Optional[str] = None          # ← NUEVO
+    modalidad: Optional[str] = "online"      # ← NUEVO
 
 
 class CourseCreate(CourseBase):

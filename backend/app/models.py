@@ -53,6 +53,10 @@ class Course(Base):
     published = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+    # NUEVOS CAMPOS
+    audiencia = Column(Text, nullable=True)
+    modalidad = Column(String, default="online")
+
     instructor = relationship("User", back_populates="courses_teaching")
     modules = relationship("Module", back_populates="course", cascade="all, delete-orphan")
     purchases = relationship("Purchase", back_populates="course")
