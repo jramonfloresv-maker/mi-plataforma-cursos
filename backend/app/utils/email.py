@@ -13,10 +13,6 @@ api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(co
 def enviar_correo(destinatario, asunto, contenido_html):
     """
     Función genérica para enviar correos usando Brevo.
-
-    :param destinatario: Diccionario con 'name' y 'email' del destinatario.
-    :param asunto: Asunto del correo.
-    :param contenido_html: Cuerpo del mensaje en formato HTML.
     """
     sender = {"name": "EduPlatform", "email": "floval_2000@yahoo.com"}
     to = [{"email": destinatario['email'], "name": destinatario['name']}]
@@ -28,12 +24,17 @@ def enviar_correo(destinatario, asunto, contenido_html):
         html_content=contenido_html
     )
 
+    print(f"📧 Preparando envío a: {destinatario['email']}")
     try:
         api_response = api_instance.send_transac_email(send_smtp_email)
-        print(f"Correo enviado exitosamente a {destinatario['email']}. ID: {api_response}")
+        print(f"✅ CORREO ENVIADO. ID de Brevo: {api_response}")
         return True
     except Exception as e:
-        print(f"Error al enviar correo: {e}")
+        # Este es el mensaje de error que necesitamos ver
+        print(f"❌ ERROR DETALLADO DE BREVO: {e}")
+        # Si el error tiene cuerpo, lo imprimimos también
+        if hasattr(e, 'body'):
+            print(f"   Cuerpo del error: {e.body}")
         return False
 
 
