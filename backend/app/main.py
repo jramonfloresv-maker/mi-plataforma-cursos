@@ -78,7 +78,7 @@ async def recibir_solicitud_empresa(request: Request):
 
     # Enviar el correo a TI usando Brevo
     # 👇 Cambia "tucorreo@ejemplo.com" por tu correo real (el que revisas)
-    destinatario = {"name": "Equipo Ventas", "email": "tucorreo@ejemplo.com"}
+    destinatario = {"name": "Equipo Ventas", "email": "floval_2000@yahoo.com"}
     enviar_correo(destinatario, asunto, contenido)
 
     return {"success": True}
