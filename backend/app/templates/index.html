@@ -825,6 +825,56 @@ function generateCalendar() {
     $('#calendarEvents').html(eventsHtml);
 }
 
+
+function sendEmpresaRequest(event) {
+    event.preventDefault();
+
+    const nombreEmpresa = $('#empresaNombre').val();
+    const contacto = $('#empresaContacto').val();
+    const email = $('#empresaEmail').val();
+    const telefono = $('#empresaTelefono').val();
+    const curso = $('#empresaCurso').val();
+    const mensaje = $('#empresaMensaje').val();
+
+    // Validar campos obligatorios
+    if (!nombreEmpresa || !contacto || !email) {
+        alert('Por favor completa los campos obligatorios: Empresa, Contacto y Correo.');
+        return;
+    }
+
+    // Preparar el contenido del email
+    const asunto = `Solicitud de curso cerrado desde EduPlatform - ${nombreEmpresa}`;
+    const contenido = `
+        <h2>Nueva solicitud de curso cerrado</h2>
+        <p><strong>Empresa:</strong> ${nombreEmpresa}</p>
+        <p><strong>Contacto:</strong> ${contacto}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Teléfono:</strong> ${telefono || 'No proporcionado'}</p>
+        <p><strong>Curso de interés:</strong> ${curso}</p>
+        <p><strong>Mensaje adicional:</strong> ${mensaje || 'No especificado'}</p>
+    `;
+
+    // Enviar usando fetch a un endpoint de tu backend
+    fetch('/api/empresa/contacto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ asunto, contenido, email_contacto: email })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ Solicitud enviada. Nos pondremos en contacto contigo pronto.');
+            $('#empresaForm')[0].reset();
+        } else {
+            alert('❌ Error al enviar. Intenta de nuevo más tarde.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('❌ Error de conexión.');
+    });
+}
+
 function changeMonth(delta) {
     currentCalendarMonth = (currentCalendarMonth + delta + 12) % 12;
     generateCalendar();
@@ -840,7 +890,7 @@ function showDayEvents(dateStr) {
 }
 function changeMonth(delta) { currentCalendarMonth = (currentCalendarMonth + delta + 12) % 12; generateCalendar(); }
 function showProjectInquiry(type){ alert(`Solicitar info de ${type}`); }
-function sendEmpresaRequest(e){ e.preventDefault(); alert('Solicitud enviada'); }
+
     // ==================== INICIO ====================
     $(document).ready(function() {
         const savedRole = localStorage.getItem('user_role');
