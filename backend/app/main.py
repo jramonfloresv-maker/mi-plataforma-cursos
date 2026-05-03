@@ -13,6 +13,9 @@ from .database import engine, Base, get_db
 from . import models, schemas, auth
 from .routes import courses, payments, crm, projects, videos, videos_capcut
 
+from backend.app.utils.email import enviar_correo, email_bienvenida
+
+
 # Crear tablas en la base de datos
 Base.metadata.create_all(bind=engine)
 
@@ -64,6 +67,21 @@ async def dashboard():
     return HTMLResponse(content=html_content)
 
 
+# ==================== SOLICITUDES DE CURSOS CERRADOS (EMPRESAS) ====================
+
+@app.post("/api/empresa/contacto")
+async def recibir_solicitud_empresa(request: Request):
+    data = await request.json()
+    asunto = data.get("asunto")
+    contenido = data.get("contenido")
+    email_contacto = data.get("email_contacto")
+
+    # Enviar el correo a TI usando Brevo
+    # 👇 Cambia "tucorreo@ejemplo.com" por tu correo real (el que revisas)
+    destinatario = {"name": "Equipo Ventas", "email": "tucorreo@ejemplo.com"}
+    enviar_correo(destinatario, asunto, contenido)
+
+    return {"success": True}
 @app.get("/")
 def root():
     return {"message": "API funcionando 🚀", "status": "online"}
@@ -86,6 +104,13 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+
+    # --- Enviar email de bienvenida ---
+    destinatario = {"name": user.name, "email": user.email}
+    asunto = "¡Bienvenido a EduPlatform!"
+    contenido_html = email_bienvenida(user.name)
+    enviar_correo(destinatario, asunto, contenido_html)
+    # -------------------------------
 
     return {"message": "Usuario creado exitosamente", "user_id": db_user.id, "email": db_user.email}
 
