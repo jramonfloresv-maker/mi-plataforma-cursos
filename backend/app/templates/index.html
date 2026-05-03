@@ -350,7 +350,10 @@
 <!-- ==================== MODALES ==================== -->
 <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-2xl p-8 w-96 max-w-[90%]">
-        <h2 class="text-2xl font-bold gradient-text mb-4">Iniciar Sesión</h2>
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold gradient-text">Iniciar Sesión</h2>
+            <button onclick="closeLoginModal()" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">&times;</button>
+        </div>
 
         <div class="mb-3">
             <label class="block text-gray-700 text-sm font-bold mb-2">Correo electrónico</label>
@@ -372,7 +375,10 @@
 </div>
 <div id="registerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-2xl p-8 w-96 max-w-[90%]">
-        <h2 class="text-2xl font-bold gradient-text mb-4">Crear cuenta</h2>
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold gradient-text">Crear cuenta</h2>
+            <button onclick="closeRegisterModal()" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">&times;</button>
+        </div>
 
         <div class="mb-3">
             <label class="block text-gray-700 text-sm font-bold mb-2">Nombre completo</label>
@@ -580,7 +586,7 @@ function actualizarSelectorVideosCompartir() {
 
 $('#shareVideoSelect').on('change', function() {
     const selectedOption = $(this).find(':selected');
-    const videoUrl = select.edOption.data('video');
+    const videoUrl = selectedOption.data('video');
     const title = selectedOption.data('title');
 
     if (videoUrl) {
