@@ -529,6 +529,207 @@
     });
 }
 
+// ==================== DETALLE DEL CURSO ====================
+function showCourseDetail(course) {
+    currentCourse = course;
+
+    $('#heroSection, #cursosSection, #calendarioSection, #empresasSection, #proyectosSection, #nosotrosSection, #marketingSection').addClass('hidden');
+    $('#courseDetailPage').removeClass('hidden');
+
+    const isLive = course.course_type === 'live';
+    const badgeHtml = isLive ? '<span class="detail-badge-live">🔴 CURSO ONLINE EN VIVO</span>' : '<span class="detail-badge-recorded">📹 CURSO GRABADO</span>';
+
+    // ========== VIDEO PROMOCIONAL ==========
+    let videoHtml = '';
+    if (course.video_promocional && course.video_promocional.trim() !== '') {
+        videoHtml = `
+            <div class="mb-6">
+                <video controls class="w-full rounded-lg shadow-md">
+                    <source src="${course.video_promocional}" type="video/mp4">
+                    Tu navegador no soporta videos HTML5.
+                </video>
+            </div>
+        `;
+    }
+
+    // ========== IMAGEN DE PORTADA ==========
+    const portadaUrl = course.imagen_portada || 'https://via.placeholder.com/800x400?text=EduPlatform';
+    const portadaHtml = `
+        <div class="mb-6">
+            <img src="${portadaUrl}" alt="${course.title}" class="w-full rounded-xl shadow-md object-cover" style="max-height: 400px;">
+        </div>
+    `;
+
+    // ========== OBJETIVO ==========
+    const objetivoHtml = course.objetivo ? `
+        <div class="mb-6">
+            <h3 class="font-bold text-lg mb-3"><i class="fas fa-bullseye text-purple-500 mr-2"></i>Objetivos y resultados</h3>
+            <div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.objetivo)}</div>
+        </div>
+    ` : '';
+
+    // ========== AUDIENCIA ==========
+    const audienciaHtml = course.audiencia ? `
+        <div class="mb-6">
+            <h3 class="font-bold text-lg mb-3"><i class="fas fa-users text-purple-500 mr-2"></i>Audiencia objetivo</h3>
+            <div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.audiencia)}</div>
+        </div>
+    ` : '';
+
+    // ========== CONTENIDO ==========
+    const contenidoHtml = course.contenido_detallado ? `
+        <div class="mb-6">
+            <h3 class="font-bold text-lg mb-3"><i class="fas fa-list-check text-purple-500 mr-2"></i>Contenido del curso</h3>
+            <div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.contenido_detallado)}</div>
+        </div>
+    ` : '';
+
+    // ========== REQUISITOS ==========
+    const requisitosHtml = course.requisitos ? `
+        <div class="mb-6">
+            <h3 class="font-bold text-lg mb-3"><i class="fas fa-clipboard-list text-purple-500 mr-2"></i>Requisitos previos</h3>
+            <div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.requisitos)}</div>
+        </div>
+    ` : '';
+
+    // ========== CERTIFICACIÓN ==========
+    let certificacionHtml = `
+        <div class="mb-6">
+            <h3 class="font-bold text-lg mb-3"><i class="fas fa-certificate text-purple-500 mr-2"></i>Certificación</h3>
+            <div class="space-y-2">
+                ${course.certificacion_incluida !== false ? '<p class="text-gray-600"><i class="fas fa-check-circle text-green-500 mr-2"></i>Constancia de habilidades con valor curricular</p>' : ''}
+                ${course.dc3_disponible ? '<p class="text-gray-600"><i class="fas fa-check-circle text-green-500 mr-2"></i>DC3 (Diploma con validez ante la STPS)</p>' : ''}
+                <p class="text-gray-600"><i class="fas fa-check-circle text-green-500 mr-2"></i>Certificado digital descargable</p>
+            </div>
+        </div>
+    `;
+
+    // ========== FECHAS (para cursos en vivo) ==========
+    let fechasHtml = '';
+    if (isLive && course.live_dates) {
+        try {
+            let fechas = typeof course.live_dates === 'string' ? JSON.parse(course.live_dates) : course.live_dates;
+            let fechasList = fechas.map(f => {
+                let fechaObj = new Date(f);
+                return `<div class="flex justify-between items-center border-b py-3">
+                            <span><i class="far fa-calendar-alt text-purple-500 mr-2"></i>${fechaObj.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long', year:'numeric' })}</span>
+                            <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">${fechaObj.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' })}</span>
+                        </div>`;
+            }).join('');
+            fechasHtml = `
+                <div class="detail-sidebar-card">
+                    <h3 class="font-bold text-lg mb-4"><i class="fas fa-calendar-alt text-purple-500 mr-2"></i>Próximas fechas</h3>
+                    <div class="space-y-2 max-h-64 overflow-y-auto">
+                        ${fechasList}
+                    </div>
+                </div>
+            `;
+        } catch(e) {}
+    }
+
+    // ========== TEMPLATE COMPLETO ==========
+    const detailHtml = `
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="back-button" onclick="closeCourseDetail()">
+                <i class="fas fa-arrow-left"></i> Volver a cursos
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    ${portadaHtml}
+
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <div class="flex justify-between items-start mb-4 flex-wrap gap-3">
+                            <div>
+                                ${badgeHtml}
+                                <h1 class="text-3xl md:text-4xl font-bold mt-3">${escapeHtml(course.title)}</h1>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <div class="stars text-yellow-400">
+                                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-gray-500 text-sm">(7 valoraciones de clientes)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${videoHtml}
+                        ${objetivoHtml}
+                        ${audienciaHtml}
+                        ${contenidoHtml}
+                        ${requisitosHtml}
+                        ${certificacionHtml}
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <div class="detail-sidebar-card text-center">
+                        <span class="text-4xl font-bold gradient-text">$${course.price}</span>
+                        <p class="text-gray-400 text-sm line-through mt-1">$${(course.price * 1.5).toFixed(0)} MXN</p>
+                        <button onclick="buyCourse(${course.id})" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold mt-4">
+                            <i class="fas fa-shopping-cart mr-2"></i>Comprar ahora
+                        </button>
+                    </div>
+
+                    ${fechasHtml}
+
+                    <div class="detail-sidebar-card">
+                        <h3 class="font-bold text-lg mb-4"><i class="fas fa-envelope text-purple-500 mr-2"></i>¿Tienes dudas?</h3>
+                        <form id="infoFormDetail" onsubmit="sendInfoRequestDetail(event, ${course.id})">
+                            <input type="text" id="infoNameDetail" placeholder="Nombre" class="w-full border rounded-lg p-3 mb-3" required>
+                            <input type="email" id="infoEmailDetail" placeholder="Correo electrónico" class="w-full border rounded-lg p-3 mb-3" required>
+                            <textarea id="infoMessageDetail" rows="3" placeholder="Mensaje" class="w-full border rounded-lg p-3 mb-3"></textarea>
+                            <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold">
+                                Enviar mensaje <i class="fas fa-paper-plane ml-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12">
+                <h3 class="text-2xl font-bold gradient-text mb-6">Otros cursos relacionados</h3>
+                <div class="grid md:grid-cols-4 gap-4">
+                    ${allCourses.filter(c => c.id !== course.id).slice(0, 4).map(c => `
+                        <div class="recommendation-card text-center p-4 cursor-pointer hover:shadow-lg transition rounded-lg" onclick="showCourseDetail(${JSON.stringify(c).replace(/"/g, '&quot;')})">
+                            <i class="fas fa-graduation-cap text-2xl text-purple-500 mb-2"></i>
+                            <p class="font-semibold text-sm">${escapeHtml(c.title)}</p>
+                            <div class="stars text-yellow-400 text-sm mt-1">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+
+    $('#courseDetailPage').html(detailHtml);
+}
+
+// Función auxiliar para escapar HTML
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+function closeCourseDetail() {
+    $('#courseDetailPage').empty().addClass('hidden');
+    $('#heroSection').removeClass('hidden');
+    $('#cursosSection').removeClass('hidden');
+    loadCourses();
+}
+
+function sendInfoRequestDetail(e, courseId) {
+    e.preventDefault();
+    alert('✅ Gracias por tu interés. Un asesor te contactará pronto.');
+    $('#infoFormDetail')[0].reset();
+}
+
     async function loadCourses() {
         try {
             const r = await fetch('/courses/');
