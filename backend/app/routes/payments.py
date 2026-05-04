@@ -6,6 +6,9 @@ import os
 from ..database import get_db
 from .. import models, schemas, auth
 
+# Importar las funciones de email
+from backend.app.utils.email import enviar_correo, email_confirmacion_compra
+
 router = APIRouter(prefix="/payments", tags=["Pagos"])
 
 # Configurar Stripe con la clave secreta
@@ -154,6 +157,7 @@ async def handle_successful_payment(session: dict, db: Session):
     Procesar un pago exitoso:
     1. Guardar la compra en la base de datos
     2. Dar acceso al curso al usuario
+    3. Enviar email de confirmación de compra
     """
     metadata = session.get("metadata", {})
     course_id = int(metadata.get("course_id", 0))
@@ -197,8 +201,17 @@ async def handle_successful_payment(session: dict, db: Session):
 
     print(f"✅ Pago registrado: Usuario {user.email} compró curso {course.title}")
 
+    # ========== NUEVO: Enviar email de confirmación de compra ==========
+    try:
+        destinatario = {"name": user.name, "email": user.email}
+        asunto = f"✅ Confirmación de compra: {course.title}"
+        contenido_html = email_confirmacion_compra(user.name, course.title, course.price)
+        enviar_correo(destinatario, asunto, contenido_html)
+        print(f"📧 Email de confirmación enviado a {user.email}")
+    except Exception as e:
+        print(f"❌ Error al enviar email de confirmación: {e}")
+
     # Aquí puedes agregar lógica adicional:
-    # - Enviar email de confirmación
     # - Activar acceso premium
     # - Registrar en sistema de analytics, etc.
 
