@@ -12,67 +12,175 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
 
     <style>
-        /* ========== ESTILOS (Tus estilos actuales están bien, los mantengo) ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #f3f4f6; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f3f4f6 100%);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: #1f2937;
+        }
+
+        .gradient-bg { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); }
+        .gradient-text { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
         .animate-fadeInUp { animation: fadeInUp 0.6s ease-out; }
+
+        /* Tarjetas mejoradas */
         .card-hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 1rem;
-}
-.card-hover:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 30px -12px rgba(0,0,0,0.2);
-}
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 1rem;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 30px -12px rgba(99, 102, 241, 0.25);
+        }
+
+        /* Badges con degradado */
         .badge-live {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    animation: pulse 2s infinite;
-    box-shadow: 0 2px 8px rgba(239,68,68,0.3);
-}
-.badge-recorded {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-    box-shadow: 0 2px 8px rgba(16,185,129,0.3);
-}
-        .badge-company { background: #f59e0b; color: white; }
-        .badge-project { background: #8b5cf6; color: white; }
-        .nav-link { transition: all 0.3s; cursor: pointer; }
-        .nav-link.active { border-bottom: 3px solid white; }
-        .calendar-day { border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; transition: all 0.3s; cursor: pointer; text-align: center; min-height: 80px; }
-        .calendar-day:hover { border-color: #667eea; box-shadow: 0 4px 12px rgba(102,126,234,0.2); }
-        .calendar-day.has-course { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .calendar-day.today { background: #f59e0b; color: white; border-color: #f59e0b; }
-        .detail-badge-live { background: #ef4444; color: white; display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
-        .detail-badge-recorded { background: #10b981; color: white; display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            animation: pulse 2s infinite;
+            box-shadow: 0 2px 8px rgba(239,68,68,0.3);
+        }
+        .badge-recorded {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+        }
+        .badge-company { background: linear-gradient(135deg, var(--warning), #d97706); color: white; }
+        .badge-project { background: linear-gradient(135deg, var(--secondary), #7c3aed); color: white; }
+
+        /* Navegación */
+        .nav-link {
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 80%;
+        }
+        .nav-link.active { color: white; font-weight: 600; }
+
+        /* Calendario */
+        .calendar-day {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-align: center;
+            min-height: 80px;
+            background: white;
+        }
+        .calendar-day:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99,102,241,0.15);
+        }
+        .calendar-day.has-course {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        .calendar-day.today {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+            border-color: var(--warning);
+        }
+
+        /* Detalle curso */
+        .detail-badge-live { background: linear-gradient(135deg, var(--danger), #dc2626); color: white; display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .detail-badge-recorded { background: linear-gradient(135deg, var(--success), #059669); color: white; display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
         .detail-tab-btn { transition: all 0.3s; cursor: pointer; padding-bottom: 8px; }
-        .detail-tab-btn.active { border-bottom: 3px solid #667eea; color: #667eea; font-weight: bold; }
+        .detail-tab-btn.active { border-bottom: 3px solid var(--primary); color: var(--primary); font-weight: bold; }
         .detail-sidebar-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .download-btn { background: #f3f4f6; border-radius: 12px; padding: 12px; text-align: center; transition: all 0.3s; cursor: pointer; }
-        .download-btn:hover { background: #667eea; color: white; }
+
+        /* Botones */
+        .download-btn { background: #f3f4f6; border-radius: 12px; padding: 12px; transition: all 0.3s; cursor: pointer; }
+        .download-btn:hover { background: var(--primary); color: white; }
         .recommendation-card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; transition: all 0.3s; cursor: pointer; }
-        .recommendation-card:hover { border-color: #667eea; box-shadow: 0 4px 12px rgba(102,126,234,0.2); }
-        .back-button { display: inline-flex; align-items: center; gap: 8px; color: #667eea; font-weight: 600; margin-bottom: 20px; cursor: pointer; }
-        .chatbot-float { position: fixed; bottom: 20px; right: 100px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: bold; z-index: 1000; transition: all 0.3s; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .chatbot-float:hover { transform: scale(1.05); }
-        .chat-window { position: fixed; bottom: 80px; right: 100px; width: 350px; height: 500px; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: none; flex-direction: column; z-index: 1001; overflow: hidden; }
+        .recommendation-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(99,102,241,0.2); transform: translateY(-2px); }
+        .back-button { display: inline-flex; align-items: center; gap: 8px; color: var(--primary); font-weight: 600; margin-bottom: 20px; cursor: pointer; transition: transform 0.2s; }
+        .back-button:hover { transform: translateX(-4px); }
+
+        /* Chat flotante mejorado */
+        .chatbot-float {
+            position: fixed;
+            bottom: 20px;
+            right: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 50px;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            z-index: 1000;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+            transition: all 0.3s;
+        }
+        .chatbot-float:hover { transform: scale(1.05); box-shadow: 0 6px 30px rgba(99,102,241,0.6); }
+
+        .chat-window {
+            position: fixed;
+            bottom: 90px;
+            right: 100px;
+            width: 380px;
+            height: 520px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+            overflow: hidden;
+            animation: fadeInUp 0.3s ease-out;
+        }
         .chat-window.open { display: flex; }
-        .chat-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f5f5f5; }
-        .message-bot { background: white; padding: 10px 15px; border-radius: 20px; margin-bottom: 10px; max-width: 85%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .message-user { background: #667eea; color: white; padding: 10px 15px; border-radius: 20px; margin-bottom: 10px; margin-left: auto; max-width: 85%; text-align: right; }
-        .chat-input-area { padding: 15px; border-top: 1px solid #ddd; display: flex; gap: 10px; background: white; }
-        .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
-        .chat-input-area button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 25px; padding: 10px 20px; cursor: pointer; }
+        .chat-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; background: #f9fafb; }
+        .message-bot { background: white; padding: 12px 16px; border-radius: 18px; border-bottom-left-radius: 4px; margin-bottom: 12px; max-width: 85%; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .message-user { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 12px 16px; border-radius: 18px; border-bottom-right-radius: 4px; margin-bottom: 12px; margin-left: auto; max-width: 85%; }
+        .chat-input-area { padding: 16px; border-top: 1px solid #e5e7eb; background: white; display: flex; gap: 10px; }
+        .chat-input-area input { flex: 1; padding: 10px 16px; border: 1px solid #e5e7eb; border-radius: 25px; outline: none; transition: all 0.3s; }
+        .chat-input-area input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+        .chat-input-area button { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 25px; padding: 10px 20px; cursor: pointer; transition: transform 0.2s; }
+        .chat-input-area button:hover { transform: scale(1.02); }
+
+        /* WhatsApp y contacto */
         .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: bold; z-index: 1000; transition: all 0.3s; }
         .whatsapp-float:hover { transform: scale(1.05); background: #128C7E; }
+
         .contact-bar { position: fixed; bottom: 20px; left: 20px; background: white; border-radius: 50px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; gap: 15px; z-index: 1000; flex-wrap: wrap; }
-        .contact-bar a { color: #4a5568; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
-        .contact-bar a:hover { color: #667eea; }
+        .contact-bar a { color: #4a5568; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: all 0.2s; }
+        .contact-bar a:hover { color: var(--primary); transform: translateY(-2px); }
+
+        /* Redes sociales */
         .social-share { position: fixed; bottom: 100px; left: 20px; background: white; border-radius: 50px; padding: 8px 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; gap: 12px; z-index: 1000; }
         .social-share a { color: #4a5568; font-size: 1.2rem; transition: all 0.3s; }
         .social-share a:hover { transform: translateY(-3px); }
@@ -81,9 +189,23 @@
         .social-share a:hover .fa-instagram { color: #e4405f; }
         .social-share a:hover .fa-tiktok { color: #000000; }
         .social-share a:hover .fa-linkedin-in { color: #0077b5; }
+
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+
+        /* Inputs mejorados */
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+            outline: none;
+        }
+
         @media (max-width: 768px) {
             .contact-bar, .social-share { display: none; }
-            .chatbot-float { right: 20px; bottom: 80px; }
+            .chatbot-float { right: 20px; bottom: 80px; padding: 10px 18px; }
             .chat-window { right: 20px; width: calc(100% - 40px); }
             .whatsapp-float { bottom: 20px; right: 20px; left: auto; }
         }
@@ -114,7 +236,7 @@
 <div class="chat-window" id="chatWindow">
     <div class="chat-header">
         <span><i class="fas fa-robot mr-2"></i>Asistente de Ventas IA</span>
-        <button onclick="toggleChat()">✕</button>
+        <button onclick="toggleChat()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
     </div>
     <div class="chat-messages" id="chatMessages">
         <div class="message-bot">👋 ¡Hola! Soy tu asistente de ventas. ¿Qué curso te interesa?</div>
@@ -131,14 +253,17 @@
 </a>
 
 <!-- ==================== NAVBAR ==================== -->
-<nav class="gradient-bg shadow-lg sticky top-0 z-50">
+<nav class="gradient-bg shadow-xl sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 py-3">
         <div class="flex justify-between items-center flex-wrap gap-3">
-            <div class="flex items-center gap-3 cursor-pointer" onclick="showSection('cursos')">
-                <div class="bg-white rounded-full w-10 h-10 flex items-center justify-center">
-                    <i class="fas fa-graduation-cap text-purple-600 text-xl"></i>
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="showSection('cursos')">
+                <div class="bg-white/20 backdrop-blur rounded-xl w-10 h-10 flex items-center justify-center group-hover:scale-110 transition">
+                    <i class="fas fa-graduation-cap text-white text-xl"></i>
                 </div>
-                <span class="text-white text-2xl font-bold">EduPlatform</span>
+                <div>
+                    <span class="text-white text-2xl font-bold tracking-tight">EduPlatform</span>
+                    <span class="text-white/60 text-xs block -mt-1">Aprende sin límites</span>
+                </div>
             </div>
             <div class="hidden md:flex gap-6">
                 <a class="nav-link text-white font-semibold py-2" onclick="showSection('cursos')">Cursos</a>
@@ -197,7 +322,6 @@
     </div>
 </section>
 
-<!-- ==================== CALENDARIO (SIMPLIFICADO) ==================== -->
 <!-- ==================== SECCIÓN CALENDARIO ==================== -->
 <section id="calendarioSection" class="py-16 bg-white hidden">
     <div class="max-w-7xl mx-auto px-4">
@@ -223,8 +347,8 @@
             </div>
         </div>
     </div>
-</section>>
-<!-- ==================== EMPRESAS (SIMPLIFICADO) ==================== -->
+</section>
+
 <!-- ==================== SECCIÓN CURSOS CERRADOS ==================== -->
 <section id="empresasSection" class="py-16 bg-white hidden">
     <div class="max-w-7xl mx-auto px-4">
@@ -246,52 +370,46 @@
             <div class="bg-white rounded-2xl shadow-lg p-8">
                 <h3 class="text-2xl font-bold gradient-text mb-4">Solicita información</h3>
                 <form id="empresaForm" onsubmit="sendEmpresaRequest(event)" class="space-y-4">
-    <div>
-        <label class="block text-gray-700 text-sm font-bold mb-2">Nombre de la empresa *</label>
-        <input type="text" id="empresaNombre" placeholder="Ej: Mi Empresa S.A. de C.V." class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500" required>
-    </div>
-
-    <div>
-        <label class="block text-gray-700 text-sm font-bold mb-2">Persona de contacto *</label>
-        <input type="text" id="empresaContacto" placeholder="Nombre completo" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500" required>
-    </div>
-
-    <div>
-        <label class="block text-gray-700 text-sm font-bold mb-2">Correo electrónico *</label>
-        <input type="email" id="empresaEmail" placeholder="correo@ejemplo.com" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500" required>
-    </div>
-
-    <div>
-        <label class="block text-gray-700 text-sm font-bold mb-2">Teléfono</label>
-        <input type="tel" id="empresaTelefono" placeholder="Opcional" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
-    </div>
-
-    <div>
-        <label class="block text-gray-700 text-sm font-bold mb-2">Curso de interés *</label>
-        <select id="empresaCurso" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500" required>
-            <option value="">Selecciona un curso</option>
-            <option>CQI-8 Auditoría</option>
-            <option>Supply Chain Management</option>
-            <option>ISO 9001:2015</option>
-            <option>NOM-035 Riesgo Psicosocial</option>
-            <option>TPM Mantenimiento Productivo</option>
-        </select>
-    </div>
-
-    <div>
-        <label class="block text-gray-700 text-sm font-bold mb-2">Mensaje o requisitos específicos</label>
-        <textarea id="empresaMensaje" rows="3" placeholder="Cuéntanos qué necesitas..." class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500"></textarea>
-    </div>
-
-    <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:shadow-lg transition">
-        📩 Solicitar cotización
-    </button>
-</form>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nombre de la empresa *</label>
+                        <input type="text" id="empresaNombre" placeholder="Ej: Mi Empresa S.A. de C.V." class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Persona de contacto *</label>
+                        <input type="text" id="empresaContacto" placeholder="Nombre completo" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Correo electrónico *</label>
+                        <input type="email" id="empresaEmail" placeholder="correo@ejemplo.com" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Teléfono</label>
+                        <input type="tel" id="empresaTelefono" placeholder="Opcional" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Curso de interés *</label>
+                        <select id="empresaCurso" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500" required>
+                            <option value="">Selecciona un curso</option>
+                            <option>CQI-8 Auditoría</option>
+                            <option>Supply Chain Management</option>
+                            <option>ISO 9001:2015</option>
+                            <option>NOM-035 Riesgo Psicosocial</option>
+                            <option>TPM Mantenimiento Productivo</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Mensaje o requisitos específicos</label>
+                        <textarea id="empresaMensaje" rows="3" placeholder="Cuéntanos qué necesitas..." class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500"></textarea>
+                    </div>
+                    <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:shadow-lg transition">
+                        📩 Solicitar cotización
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </section>
-<!-- ==================== PROYECTOS (SIMPLIFICADO) ==================== -->
+
 <!-- ==================== SECCIÓN PROYECTOS ==================== -->
 <section id="proyectosSection" class="py-16 bg-white hidden">
     <div class="max-w-7xl mx-auto px-4">
@@ -306,7 +424,7 @@
         </div>
     </div>
 </section>
-<!-- ==================== NOSOTROS (SIMPLIFICADO) ==================== -->
+
 <!-- ==================== SECCIÓN NOSOTROS ==================== -->
 <section id="nosotrosSection" class="py-16 bg-white hidden">
     <div class="max-w-7xl mx-auto px-4">
@@ -334,7 +452,8 @@
         </div>
     </div>
 </section>
-<!-- ==================== MARKETING (SIMPLIFICADO) ==================== -->
+
+<!-- ==================== SECCIÓN MARKETING ==================== -->
 <section id="marketingSection" class="py-16 bg-white hidden">
     <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-12">
@@ -345,35 +464,21 @@
             <div class="bg-white rounded-2xl shadow-lg p-6"><h3 class="text-xl font-bold mb-4"><i class="fas fa-images text-purple-500 mr-2"></i>Generador de Flyers</h3><select id="flyerCourseSelect" class="w-full border rounded-lg p-2 mb-3"><option>Selecciona un curso</option></select><button onclick="generateFlyer()" class="w-full gradient-bg text-white py-2 rounded-lg">Generar Flyer</button><div id="flyerPreview" class="mt-4 hidden"></div></div>
             <div class="bg-white rounded-2xl shadow-lg p-6"><h3 class="text-xl font-bold mb-4"><i class="fas fa-share-alt text-purple-500 mr-2"></i>Compartir en Redes</h3><select id="shareCourseSelect" class="w-full border rounded-lg p-2 mb-3"><option>Selecciona un curso</option></select><div class="flex flex-wrap gap-3"><button onclick="shareOnFacebook()" class="bg-[#1877f2] text-white px-4 py-2 rounded-full">Facebook</button><button onclick="shareOnTwitter()" class="bg-[#1da1f2] text-white px-4 py-2 rounded-full">Twitter</button><button onclick="shareOnLinkedIn()" class="bg-[#0077b5] text-white px-4 py-2 rounded-full">LinkedIn</button><button onclick="shareOnWhatsApp()" class="bg-[#25D366] text-white px-4 py-2 rounded-full">WhatsApp</button></div></div>
         </div>
-                <!-- Compartir Video en Redes Sociales (mejorado) -->
         <div class="mt-8 bg-white rounded-2xl shadow-lg p-6">
             <h3 class="text-xl font-bold mb-4"><i class="fas fa-share-alt text-purple-500 mr-2"></i>Compartir Video en Redes Sociales</h3>
             <p class="text-gray-600 mb-4">Selecciona un curso y comparte su video promocional</p>
-
             <select id="shareVideoSelect" class="w-full border rounded-lg p-2 mb-3">
                 <option value="">Selecciona un curso con video</option>
             </select>
-
             <div id="videoPreviewShare" class="hidden mb-3">
                 <video id="shareVideoPreview" controls class="w-full rounded-lg max-h-40"></video>
             </div>
-
             <div class="flex flex-wrap gap-3">
-                <button onclick="compartirVideoFacebook()" class="bg-[#1877f2] hover:bg-[#145dbf] text-white px-4 py-2 rounded-full transition">
-                    <i class="fab fa-facebook-f mr-2"></i>Facebook
-                </button>
-                <button onclick="compartirVideoTwitter()" class="bg-[#1da1f2] hover:bg-[#0d8bd9] text-white px-4 py-2 rounded-full transition">
-                    <i class="fab fa-twitter mr-2"></i>Twitter
-                </button>
-                <button onclick="compartirVideoLinkedIn()" class="bg-[#0077b5] hover:bg-[#005e8c] text-white px-4 py-2 rounded-full transition">
-                    <i class="fab fa-linkedin-in mr-2"></i>LinkedIn
-                </button>
-                <button onclick="compartirVideoWhatsApp()" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-2 rounded-full transition">
-                    <i class="fab fa-whatsapp mr-2"></i>WhatsApp
-                </button>
-                <button onclick="compartirVideoTikTok()" class="bg-[#000000] hover:bg-[#333333] text-white px-4 py-2 rounded-full transition">
-                    <i class="fab fa-tiktok mr-2"></i>TikTok
-                </button>
+                <button onclick="compartirVideoFacebook()" class="bg-[#1877f2] hover:bg-[#145dbf] text-white px-4 py-2 rounded-full transition"><i class="fab fa-facebook-f mr-2"></i>Facebook</button>
+                <button onclick="compartirVideoTwitter()" class="bg-[#1da1f2] hover:bg-[#0d8bd9] text-white px-4 py-2 rounded-full transition"><i class="fab fa-twitter mr-2"></i>Twitter</button>
+                <button onclick="compartirVideoLinkedIn()" class="bg-[#0077b5] hover:bg-[#005e8c] text-white px-4 py-2 rounded-full transition"><i class="fab fa-linkedin-in mr-2"></i>LinkedIn</button>
+                <button onclick="compartirVideoWhatsApp()" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-2 rounded-full transition"><i class="fab fa-whatsapp mr-2"></i>WhatsApp</button>
+                <button onclick="compartirVideoTikTok()" class="bg-[#000000] hover:bg-[#333333] text-white px-4 py-2 rounded-full transition"><i class="fab fa-tiktok mr-2"></i>TikTok</button>
             </div>
         </div>
         <div class="mt-8 bg-white rounded-2xl shadow-lg p-6">
@@ -401,55 +506,48 @@
             <h2 class="text-2xl font-bold gradient-text">Iniciar Sesión</h2>
             <button onclick="closeLoginModal()" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">&times;</button>
         </div>
-
         <div class="mb-3">
             <label class="block text-gray-700 text-sm font-bold mb-2">Correo electrónico</label>
             <input type="email" id="login-email" placeholder="tucorreo@ejemplo.com" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
         </div>
-
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
             <input type="password" id="login-password" placeholder="Tu contraseña" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
         </div>
-
         <button onclick="login()" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:shadow-lg transition">Iniciar Sesión</button>
-
         <p class="text-center mt-4 text-gray-600">
             ¿No tienes cuenta?
             <button onclick="showRegisterModal()" class="text-purple-600 font-semibold">Regístrate</button>
         </p>
     </div>
 </div>
+
 <div id="registerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-2xl p-8 w-96 max-w-[90%]">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-bold gradient-text">Crear cuenta</h2>
             <button onclick="closeRegisterModal()" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">&times;</button>
         </div>
-
         <div class="mb-3">
             <label class="block text-gray-700 text-sm font-bold mb-2">Nombre completo</label>
             <input type="text" id="register-name" placeholder="Ej: Jesús Ramón Flores" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
         </div>
-
         <div class="mb-3">
             <label class="block text-gray-700 text-sm font-bold mb-2">Correo electrónico</label>
             <input type="email" id="register-email" placeholder="tucorreo@ejemplo.com" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
         </div>
-
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
             <input type="password" id="register-password" placeholder="Mínimo 6 caracteres" class="w-full border rounded-lg p-3 focus:outline-none focus:border-purple-500">
         </div>
-
         <button onclick="register()" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:shadow-lg transition">Registrarse</button>
-
         <p class="text-center mt-4 text-gray-600">
             ¿Ya tienes cuenta?
             <button onclick="showLoginModal()" class="text-purple-600 font-semibold">Inicia sesión</button>
         </p>
     </div>
 </div>
+
 <div id="projectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div class="bg-white rounded-2xl p-8 w-96">...</div></div>
 
 <footer class="bg-gray-900 text-white py-12 mt-8"><div class="max-w-7xl mx-auto px-4 text-center"><p>&copy; 2026 EduPlatform. Todos los derechos reservados.</p></div></footer>
@@ -463,16 +561,15 @@
     let listaVideos = [];
 
     const courseEvents = [
-    { title: 'CQI-8 Auditoría en Capas', date: '2026-04-06', type: 'live' },
-    { title: 'Supply Chain Management', date: '2026-04-07', type: 'live' },
-    { title: 'ISO 9001 Auditor Interno', date: '2026-04-14', type: 'live' },
-    { title: 'Python Avanzado', date: '2026-05-10', type: 'live' },
-    { title: 'Data Science', date: '2026-05-17', type: 'live' },
-    { title: 'TPM Mantenimiento', date: '2026-06-05', type: 'live' }
-];
+        { title: 'CQI-8 Auditoría en Capas', date: '2026-04-06', type: 'live' },
+        { title: 'Supply Chain Management', date: '2026-04-07', type: 'live' },
+        { title: 'ISO 9001 Auditor Interno', date: '2026-04-14', type: 'live' },
+        { title: 'Python Avanzado', date: '2026-05-10', type: 'live' },
+        { title: 'Data Science', date: '2026-05-17', type: 'live' },
+        { title: 'TPM Mantenimiento', date: '2026-06-05', type: 'live' }
+    ];
 
     // ==================== FUNCIONES DE NAVEGACIÓN ====================
-        // ==================== FUNCIONES DE NAVEGACIÓN ====================
     function showSection(section) {
         $('#heroSection, #cursosSection, #calendarioSection, #empresasSection, #proyectosSection, #nosotrosSection, #marketingSection').addClass('hidden');
         $('#courseDetailPage').addClass('hidden');
@@ -487,7 +584,7 @@
         }
         else if (section === 'calendario') {
             $('#calendarioSection').removeClass('hidden');
-            generateCalendar();   // ← LÍNEA AGREGADA
+            generateCalendar();
         }
         else {
             $('#' + section + 'Section').removeClass('hidden');
@@ -508,243 +605,125 @@
         let options = '<option value="">Selecciona un curso</option>';
         allCourses.forEach(c => options += `<option value="${c.id}">${c.title} - $${c.price}</option>`);
         $('#flyerCourseSelect, #shareCourseSelect, #uploadCourseSelect').html(options);
-        actualizarSelectorVideosCompartir();  // ← NUEVA LÍNEA
+        actualizarSelectorVideosCompartir();
     }
 
     // ==================== CURSOS ====================
     function displayCourses(courses) {
-    const container = $('#coursesList');
-    container.empty();
-    if (!courses || courses.length === 0) {
-        container.html('<div class="text-center py-12">No hay cursos disponibles</div>');
-        return;
-    }
-    courses.forEach(course => {
-        const isLive = course.course_type === 'live';
-        const badge = isLive ? '🔴 EN VIVO' : '📹 GRABADO';
-        const badgeClass = isLive ? 'badge-live' : 'badge-recorded';
-        container.append(`
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
-                <div class="${badgeClass}" style="height:4px"></div>
-                <div class="p-5">
-                    <div class="flex justify-between mb-3">
-                        <span class="${badgeClass} text-xs px-3 py-1 rounded-full">${badge}</span>
-                        <i class="fas fa-star text-yellow-400"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">${course.title}</h3>
-                    <p class="text-gray-500 text-sm mb-3">${course.description?.substring(0,100)||'Sin descripción'}...</p>
-                    <div class="flex justify-between items-center mt-4 pt-3 border-t">
-                        <span class="text-2xl font-bold gradient-text">$${course.price}</span>
-                        <button onclick="showCourseDetail(${JSON.stringify(course).replace(/"/g, '&quot;')})" class="gradient-bg text-white px-5 py-2 rounded-full">
-                            <i class="fas fa-info-circle mr-1"></i> Ver detalles
-                        </button>
+        const container = $('#coursesList');
+        container.empty();
+        if (!courses || courses.length === 0) {
+            container.html('<div class="text-center py-12">No hay cursos disponibles</div>');
+            return;
+        }
+        courses.forEach(course => {
+            const isLive = course.course_type === 'live';
+            const badge = isLive ? '🔴 EN VIVO' : '📹 GRABADO';
+            const badgeClass = isLive ? 'badge-live' : 'badge-recorded';
+            container.append(`
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="${badgeClass}" style="height:4px"></div>
+                    <div class="p-5">
+                        <div class="flex justify-between mb-3">
+                            <span class="${badgeClass} text-xs px-3 py-1 rounded-full">${badge}</span>
+                            <i class="fas fa-star text-yellow-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">${escapeHtml(course.title)}</h3>
+                        <p class="text-gray-500 text-sm mb-3">${escapeHtml(course.description?.substring(0,100)||'Sin descripción')}...</p>
+                        <div class="flex justify-between items-center mt-4 pt-3 border-t">
+                            <span class="text-2xl font-bold gradient-text">$${course.price}</span>
+                            <button onclick='showCourseDetail(${JSON.stringify(course).replace(/'/g, "&#39;")})' class="gradient-bg text-white px-5 py-2 rounded-full">
+                                <i class="fas fa-info-circle mr-1"></i> Ver detalles
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `);
-    });
-}
+            `);
+        });
+    }
 
-// ==================== DETALLE DEL CURSO ====================
-function showCourseDetail(course) {
-    currentCourse = course;
+    // ==================== DETALLE DEL CURSO ====================
+    let currentCourse = null;
 
-    $('#heroSection, #cursosSection, #calendarioSection, #empresasSection, #proyectosSection, #nosotrosSection, #marketingSection').addClass('hidden');
-    $('#courseDetailPage').removeClass('hidden');
+    function showCourseDetail(course) {
+        currentCourse = course;
+        $('#heroSection, #cursosSection, #calendarioSection, #empresasSection, #proyectosSection, #nosotrosSection, #marketingSection').addClass('hidden');
+        $('#courseDetailPage').removeClass('hidden');
 
-    const isLive = course.course_type === 'live';
-    const badgeHtml = isLive ? '<span class="detail-badge-live">🔴 CURSO ONLINE EN VIVO</span>' : '<span class="detail-badge-recorded">📹 CURSO GRABADO</span>';
+        const isLive = course.course_type === 'live';
+        const badgeHtml = isLive ? '<span class="detail-badge-live">🔴 CURSO ONLINE EN VIVO</span>' : '<span class="detail-badge-recorded">📹 CURSO GRABADO</span>';
 
-    // ========== VIDEO PROMOCIONAL ==========
-    let videoHtml = '';
-    if (course.video_promocional && course.video_promocional.trim() !== '') {
-        videoHtml = `
-            <div class="mb-6">
-                <video controls class="w-full rounded-lg shadow-md">
-                    <source src="${course.video_promocional}" type="video/mp4">
-                    Tu navegador no soporta videos HTML5.
-                </video>
+        let videoHtml = '';
+        if (course.video_promocional && course.video_promocional.trim() !== '') {
+            videoHtml = `<div class="mb-6"><video controls class="w-full rounded-lg shadow-md"><source src="${course.video_promocional}" type="video/mp4">Tu navegador no soporta videos HTML5.</video></div>`;
+        }
+
+        const portadaUrl = course.imagen_portada || 'https://via.placeholder.com/800x400?text=EduPlatform';
+        const portadaHtml = `<div class="mb-6"><img src="${portadaUrl}" alt="${course.title}" class="w-full rounded-xl shadow-md object-cover" style="max-height: 400px;"></div>`;
+
+        const objetivoHtml = course.objetivo ? `<div class="mb-6"><h3 class="font-bold text-lg mb-3"><i class="fas fa-bullseye text-purple-500 mr-2"></i>Objetivos y resultados</h3><div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.objetivo)}</div></div>` : '';
+        const audienciaHtml = course.audiencia ? `<div class="mb-6"><h3 class="font-bold text-lg mb-3"><i class="fas fa-users text-purple-500 mr-2"></i>Audiencia objetivo</h3><div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.audiencia)}</div></div>` : '';
+        const contenidoHtml = course.contenido_detallado ? `<div class="mb-6"><h3 class="font-bold text-lg mb-3"><i class="fas fa-list-check text-purple-500 mr-2"></i>Contenido del curso</h3><div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.contenido_detallado)}</div></div>` : '';
+        const requisitosHtml = course.requisitos ? `<div class="mb-6"><h3 class="font-bold text-lg mb-3"><i class="fas fa-clipboard-list text-purple-500 mr-2"></i>Requisitos previos</h3><div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.requisitos)}</div></div>` : '';
+
+        let certificacionHtml = `<div class="mb-6"><h3 class="font-bold text-lg mb-3"><i class="fas fa-certificate text-purple-500 mr-2"></i>Certificación</h3><div class="space-y-2">${course.certificacion_incluida !== false ? '<p class="text-gray-600"><i class="fas fa-check-circle text-green-500 mr-2"></i>Constancia de habilidades con valor curricular</p>' : ''}${course.dc3_disponible ? '<p class="text-gray-600"><i class="fas fa-check-circle text-green-500 mr-2"></i>DC3 (Diploma con validez ante la STPS)</p>' : ''}<p class="text-gray-600"><i class="fas fa-check-circle text-green-500 mr-2"></i>Certificado digital descargable</p></div></div>`;
+
+        let fechasHtml = '';
+        if (isLive && course.live_dates) {
+            try {
+                let fechas = typeof course.live_dates === 'string' ? JSON.parse(course.live_dates) : course.live_dates;
+                let fechasList = fechas.map(f => { let fechaObj = new Date(f); return `<div class="flex justify-between items-center border-b py-3"><span><i class="far fa-calendar-alt text-purple-500 mr-2"></i>${fechaObj.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long', year:'numeric' })}</span><span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">${fechaObj.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' })}</span></div>`; }).join('');
+                fechasHtml = `<div class="detail-sidebar-card"><h3 class="font-bold text-lg mb-4"><i class="fas fa-calendar-alt text-purple-500 mr-2"></i>Próximas fechas</h3><div class="space-y-2 max-h-64 overflow-y-auto">${fechasList}</div></div>`;
+            } catch(e) {}
+        }
+
+        const detailHtml = `
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <div class="back-button" onclick="closeCourseDetail()"><i class="fas fa-arrow-left"></i> Volver a cursos</div>
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        ${portadaHtml}
+                        <div class="bg-white rounded-2xl shadow-lg p-6">
+                            <div class="flex justify-between items-start mb-4 flex-wrap gap-3">
+                                <div>${badgeHtml}<h1 class="text-3xl md:text-4xl font-bold mt-3">${escapeHtml(course.title)}</h1><div class="flex items-center gap-2 mt-2"><div class="stars text-yellow-400"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><span class="text-gray-500 text-sm">(7 valoraciones de clientes)</span></div></div>
+                            </div>
+                            ${videoHtml}${objetivoHtml}${audienciaHtml}${contenidoHtml}${requisitosHtml}${certificacionHtml}
+                        </div>
+                    </div>
+                    <div class="lg:col-span-1">
+                        <div class="detail-sidebar-card text-center"><span class="text-4xl font-bold gradient-text">$${course.price}</span><p class="text-gray-400 text-sm line-through mt-1">$${(course.price * 1.5).toFixed(0)} MXN</p><button onclick="buyCourse(${course.id})" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold mt-4"><i class="fas fa-shopping-cart mr-2"></i>Comprar ahora</button></div>
+                        ${fechasHtml}
+                        <div class="detail-sidebar-card"><h3 class="font-bold text-lg mb-4"><i class="fas fa-envelope text-purple-500 mr-2"></i>¿Tienes dudas?</h3><form id="infoFormDetail" onsubmit="sendInfoRequestDetail(event, ${course.id})"><input type="text" id="infoNameDetail" placeholder="Nombre" class="w-full border rounded-lg p-3 mb-3" required><input type="email" id="infoEmailDetail" placeholder="Correo electrónico" class="w-full border rounded-lg p-3 mb-3" required><textarea id="infoMessageDetail" rows="3" placeholder="Mensaje" class="w-full border rounded-lg p-3 mb-3"></textarea><button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold">Enviar mensaje <i class="fas fa-paper-plane ml-2"></i></button></form></div>
+                    </div>
+                </div>
+                <div class="mt-12"><h3 class="text-2xl font-bold gradient-text mb-6">Otros cursos relacionados</h3><div class="grid md:grid-cols-4 gap-4">${allCourses.filter(c => c.id !== course.id).slice(0, 4).map(c => `<div class="recommendation-card text-center p-4 cursor-pointer hover:shadow-lg transition rounded-lg" onclick='showCourseDetail(${JSON.stringify(c).replace(/'/g, "&#39;")})'><i class="fas fa-graduation-cap text-2xl text-purple-500 mb-2"></i><p class="font-semibold text-sm">${escapeHtml(c.title)}</p><div class="stars text-yellow-400 text-sm mt-1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div></div>`).join('')}</div></div>
             </div>
         `;
+        $('#courseDetailPage').html(detailHtml);
     }
 
-    // ========== IMAGEN DE PORTADA ==========
-    const portadaUrl = course.imagen_portada || 'https://via.placeholder.com/800x400?text=EduPlatform';
-    const portadaHtml = `
-        <div class="mb-6">
-            <img src="${portadaUrl}" alt="${course.title}" class="w-full rounded-xl shadow-md object-cover" style="max-height: 400px;">
-        </div>
-    `;
-
-    // ========== OBJETIVO ==========
-    const objetivoHtml = course.objetivo ? `
-        <div class="mb-6">
-            <h3 class="font-bold text-lg mb-3"><i class="fas fa-bullseye text-purple-500 mr-2"></i>Objetivos y resultados</h3>
-            <div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.objetivo)}</div>
-        </div>
-    ` : '';
-
-    // ========== AUDIENCIA ==========
-    const audienciaHtml = course.audiencia ? `
-        <div class="mb-6">
-            <h3 class="font-bold text-lg mb-3"><i class="fas fa-users text-purple-500 mr-2"></i>Audiencia objetivo</h3>
-            <div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.audiencia)}</div>
-        </div>
-    ` : '';
-
-    // ========== CONTENIDO ==========
-    const contenidoHtml = course.contenido_detallado ? `
-        <div class="mb-6">
-            <h3 class="font-bold text-lg mb-3"><i class="fas fa-list-check text-purple-500 mr-2"></i>Contenido del curso</h3>
-            <div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.contenido_detallado)}</div>
-        </div>
-    ` : '';
-
-    // ========== REQUISITOS ==========
-    const requisitosHtml = course.requisitos ? `
-        <div class="mb-6">
-            <h3 class="font-bold text-lg mb-3"><i class="fas fa-clipboard-list text-purple-500 mr-2"></i>Requisitos previos</h3>
-            <div class="text-gray-600 leading-relaxed whitespace-pre-line">${escapeHtml(course.requisitos)}</div>
-        </div>
-    ` : '';
-
-    // ========== CERTIFICACIÓN ==========
-    let certificacionHtml = `
-        <div class="mb-6">
-            <h3 class="font-bold text-lg mb-3"><i class="fas fa-certificate text-purple-500 mr-2"></i>Certificación</h3>
-            <div class="space-y-2">
-                ${course.certificacion_incluida !== false ? '<p class="text-gray-600"><i class="fas fa-check-circle text-green-500 mr-2"></i>Constancia de habilidades con valor curricular</p>' : ''}
-                ${course.dc3_disponible ? '<p class="text-gray-600"><i class="fas fa-check-circle text-green-500 mr-2"></i>DC3 (Diploma con validez ante la STPS)</p>' : ''}
-                <p class="text-gray-600"><i class="fas fa-check-circle text-green-500 mr-2"></i>Certificado digital descargable</p>
-            </div>
-        </div>
-    `;
-
-    // ========== FECHAS (para cursos en vivo) ==========
-    let fechasHtml = '';
-    if (isLive && course.live_dates) {
-        try {
-            let fechas = typeof course.live_dates === 'string' ? JSON.parse(course.live_dates) : course.live_dates;
-            let fechasList = fechas.map(f => {
-                let fechaObj = new Date(f);
-                return `<div class="flex justify-between items-center border-b py-3">
-                            <span><i class="far fa-calendar-alt text-purple-500 mr-2"></i>${fechaObj.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long', year:'numeric' })}</span>
-                            <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">${fechaObj.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' })}</span>
-                        </div>`;
-            }).join('');
-            fechasHtml = `
-                <div class="detail-sidebar-card">
-                    <h3 class="font-bold text-lg mb-4"><i class="fas fa-calendar-alt text-purple-500 mr-2"></i>Próximas fechas</h3>
-                    <div class="space-y-2 max-h-64 overflow-y-auto">
-                        ${fechasList}
-                    </div>
-                </div>
-            `;
-        } catch(e) {}
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
     }
 
-    // ========== TEMPLATE COMPLETO ==========
-    const detailHtml = `
-        <div class="max-w-7xl mx-auto px-4 py-8">
-            <div class="back-button" onclick="closeCourseDetail()">
-                <i class="fas fa-arrow-left"></i> Volver a cursos
-            </div>
+    function closeCourseDetail() {
+        $('#courseDetailPage').empty().addClass('hidden');
+        $('#heroSection').removeClass('hidden');
+        $('#cursosSection').removeClass('hidden');
+        loadCourses();
+    }
 
-            <div class="grid lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2">
-                    ${portadaHtml}
-
-                    <div class="bg-white rounded-2xl shadow-lg p-6">
-                        <div class="flex justify-between items-start mb-4 flex-wrap gap-3">
-                            <div>
-                                ${badgeHtml}
-                                <h1 class="text-3xl md:text-4xl font-bold mt-3">${escapeHtml(course.title)}</h1>
-                                <div class="flex items-center gap-2 mt-2">
-                                    <div class="stars text-yellow-400">
-                                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                                    </div>
-                                    <span class="text-gray-500 text-sm">(7 valoraciones de clientes)</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        ${videoHtml}
-                        ${objetivoHtml}
-                        ${audienciaHtml}
-                        ${contenidoHtml}
-                        ${requisitosHtml}
-                        ${certificacionHtml}
-                    </div>
-                </div>
-
-                <div class="lg:col-span-1">
-                    <div class="detail-sidebar-card text-center">
-                        <span class="text-4xl font-bold gradient-text">$${course.price}</span>
-                        <p class="text-gray-400 text-sm line-through mt-1">$${(course.price * 1.5).toFixed(0)} MXN</p>
-                        <button onclick="buyCourse(${course.id})" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold mt-4">
-                            <i class="fas fa-shopping-cart mr-2"></i>Comprar ahora
-                        </button>
-                    </div>
-
-                    ${fechasHtml}
-
-                    <div class="detail-sidebar-card">
-                        <h3 class="font-bold text-lg mb-4"><i class="fas fa-envelope text-purple-500 mr-2"></i>¿Tienes dudas?</h3>
-                        <form id="infoFormDetail" onsubmit="sendInfoRequestDetail(event, ${course.id})">
-                            <input type="text" id="infoNameDetail" placeholder="Nombre" class="w-full border rounded-lg p-3 mb-3" required>
-                            <input type="email" id="infoEmailDetail" placeholder="Correo electrónico" class="w-full border rounded-lg p-3 mb-3" required>
-                            <textarea id="infoMessageDetail" rows="3" placeholder="Mensaje" class="w-full border rounded-lg p-3 mb-3"></textarea>
-                            <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold">
-                                Enviar mensaje <i class="fas fa-paper-plane ml-2"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-12">
-                <h3 class="text-2xl font-bold gradient-text mb-6">Otros cursos relacionados</h3>
-                <div class="grid md:grid-cols-4 gap-4">
-                    ${allCourses.filter(c => c.id !== course.id).slice(0, 4).map(c => `
-                        <div class="recommendation-card text-center p-4 cursor-pointer hover:shadow-lg transition rounded-lg" onclick="showCourseDetail(${JSON.stringify(c).replace(/"/g, '&quot;')})">
-                            <i class="fas fa-graduation-cap text-2xl text-purple-500 mb-2"></i>
-                            <p class="font-semibold text-sm">${escapeHtml(c.title)}</p>
-                            <div class="stars text-yellow-400 text-sm mt-1">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        </div>
-    `;
-
-    $('#courseDetailPage').html(detailHtml);
-}
-
-// Función auxiliar para escapar HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
-function closeCourseDetail() {
-    $('#courseDetailPage').empty().addClass('hidden');
-    $('#heroSection').removeClass('hidden');
-    $('#cursosSection').removeClass('hidden');
-    loadCourses();
-}
-
-function sendInfoRequestDetail(e, courseId) {
-    e.preventDefault();
-    alert('✅ Gracias por tu interés. Un asesor te contactará pronto.');
-    $('#infoFormDetail')[0].reset();
-}
+    function sendInfoRequestDetail(e, courseId) {
+        e.preventDefault();
+        alert('✅ Gracias por tu interés. Un asesor te contactará pronto.');
+        $('#infoFormDetail')[0].reset();
+    }
 
     async function loadCourses() {
         try {
@@ -756,6 +735,10 @@ function sendInfoRequestDetail(e, courseId) {
                 updateCourseSelects();
             } else $('#coursesList').html('<p class="text-red-500">Error al cargar cursos</p>');
         } catch(e) { $('#coursesList').html('<p class="text-red-500">Error de conexión</p>'); }
+    }
+
+    function buyCourse(courseId) {
+        alert(`🛒 Curso ${courseId} agregado al carrito. Próximamente disponible la pasarela de pago.`);
     }
 
     // ==================== AUTENTICACIÓN ====================
@@ -813,117 +796,90 @@ function sendInfoRequestDetail(e, courseId) {
     function sendChatMessage(){
         const msg=$('#chatInput').val().trim();
         if(!msg) return;
-        $('#chatMessages').append(`<div class="message-user">${msg}</div>`);
+        $('#chatMessages').append(`<div class="message-user">${escapeHtml(msg)}</div>`);
         $('#chatInput').val('');
         $('#chatMessages').append(`<div class="message-bot">Gracias por tu consulta. Un asesor te contactará.</div>`);
         $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
     }
-    // ==================== COMPARTIR VIDEOS EN REDES SOCIALES ====================
 
-//let cursoSeleccionadoParaCompartir = null;
+    // ==================== COMPARTIR VIDEOS ====================
+    let cursoSeleccionadoParaCompartir = null;
 
-function actualizarSelectorVideosCompartir() {
-    const select = $('#shareVideoSelect');
-    select.empty();
-    select.append('<option value="">Selecciona un curso con video</option>');
-
-    if (!listaVideos || listaVideos.length === 0) {
-        select.append('<option disabled>No hay videos subidos</option>');
-        return;
+    function actualizarSelectorVideosCompartir() {
+        const select = $('#shareVideoSelect');
+        select.empty();
+        select.append('<option value="">Selecciona un curso con video</option>');
+        if (!listaVideos || listaVideos.length === 0) {
+            select.append('<option disabled>No hay videos subidos</option>');
+            return;
+        }
+        listaVideos.forEach(video => {
+            select.append(`<option value="${video.id}" data-video="${video.video_url}" data-title="${escapeHtml(video.title)}">${escapeHtml(video.title)}</option>`);
+        });
     }
 
-    listaVideos.forEach(video => {
-        select.append(`<option value="${video.id}" data-video="${video.video_url}" data-title="${escapeHtml(video.title)}">${escapeHtml(video.title)}</option>`);
+    $('#shareVideoSelect').on('change', function() {
+        const selectedOption = $(this).find(':selected');
+        const videoUrl = selectedOption.data('video');
+        const title = selectedOption.data('title');
+        if (videoUrl) {
+            cursoSeleccionadoParaCompartir = { id: $(this).val(), title: title, video_url: videoUrl };
+            $('#shareVideoPreview').attr('src', videoUrl);
+            $('#videoPreviewShare').removeClass('hidden');
+        } else {
+            $('#videoPreviewShare').addClass('hidden');
+            cursoSeleccionadoParaCompartir = null;
+        }
     });
-}
 
-$('#shareVideoSelect').on('change', function() {
-    const selectedOption = $(this).find(':selected');
-    const videoUrl = selectedOption.data('video');
-    const title = selectedOption.data('title');
-
-    if (videoUrl) {
-        cursoSeleccionadoParaCompartir = {
-            id: $(this).val(),
-            title: title,
-            video_url: videoUrl
-        };
-        $('#shareVideoPreview').attr('src', videoUrl);
-        $('#videoPreviewShare').removeClass('hidden');
-    } else {
-        $('#videoPreviewShare').addClass('hidden');
-        cursoSeleccionadoParaCompartir = null;
+    function compartirVideoFacebook() {
+        const selectedId = $('#shareVideoSelect').val();
+        if (!selectedId) { alert('Selecciona un curso primero'); return; }
+        const video = listaVideos.find(v => v.id == selectedId);
+        if (!video || !video.video_url) { alert('No se encontró el video'); return; }
+        const fullUrl = window.location.origin + video.video_url;
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}`, '_blank');
     }
-});
 
-// ==================== COMPARTIR VIDEOS EN REDES SOCIALES ====================
+    function compartirVideoTwitter() {
+        const selectedId = $('#shareVideoSelect').val();
+        if (!selectedId) { alert('Selecciona un curso primero'); return; }
+        const video = listaVideos.find(v => v.id == selectedId);
+        if (!video || !video.video_url) return;
+        const fullUrl = window.location.origin + video.video_url;
+        const text = encodeURIComponent(`🎓 ${video.title} - Aprende con nosotros`);
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(fullUrl)}`, '_blank');
+    }
 
-function compartirVideoFacebook() {
-    const selectedId = $('#shareVideoSelect').val();
-    if (!selectedId) {
-        alert('Selecciona un curso primero');
-        return;
+    function compartirVideoLinkedIn() {
+        const selectedId = $('#shareVideoSelect').val();
+        if (!selectedId) { alert('Selecciona un curso primero'); return; }
+        const video = listaVideos.find(v => v.id == selectedId);
+        if (!video || !video.video_url) return;
+        const fullUrl = window.location.origin + video.video_url;
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fullUrl)}`, '_blank');
     }
-    const video = listaVideos.find(v => v.id == selectedId);
-    if (!video || !video.video_url) {
-        alert('No se encontró el video');
-        return;
-    }
-    const fullUrl = window.location.origin + video.video_url;
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}`, '_blank');
-}
 
-function compartirVideoTwitter() {
-    const selectedId = $('#shareVideoSelect').val();
-    if (!selectedId) {
-        alert('Selecciona un curso primero');
-        return;
+    function compartirVideoWhatsApp() {
+        const selectedId = $('#shareVideoSelect').val();
+        if (!selectedId) { alert('Selecciona un curso primero'); return; }
+        const video = listaVideos.find(v => v.id == selectedId);
+        if (!video || !video.video_url) return;
+        const fullUrl = window.location.origin + video.video_url;
+        const text = encodeURIComponent(`🎓 ${video.title}\n📹 Mira el video promocional:\n${fullUrl}`);
+        window.open(`https://wa.me/?text=${text}`, '_blank');
     }
-    const video = listaVideos.find(v => v.id == selectedId);
-    if (!video || !video.video_url) return;
-    const fullUrl = window.location.origin + video.video_url;
-    const text = encodeURIComponent(`🎓 ${video.title} - Aprende con nosotros`);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(fullUrl)}`, '_blank');
-}
 
-function compartirVideoLinkedIn() {
-    const selectedId = $('#shareVideoSelect').val();
-    if (!selectedId) {
-        alert('Selecciona un curso primero');
-        return;
+    function compartirVideoTikTok() {
+        const selectedId = $('#shareVideoSelect').val();
+        if (!selectedId) { alert('Selecciona un curso primero'); return; }
+        const video = listaVideos.find(v => v.id == selectedId);
+        if (!video || !video.video_url) return;
+        const fullUrl = window.location.origin + video.video_url;
+        const mensaje = `🎓 ${video.title}\n✨ Aprende desde casa\n✅ Certificación incluida\n📹 ${fullUrl}`;
+        alert(`📱 Para compartir en TikTok:\n\nCopia este texto:\n\n${mensaje}`);
+        window.open('https://www.tiktok.com/upload', '_blank');
     }
-    const video = listaVideos.find(v => v.id == selectedId);
-    if (!video || !video.video_url) return;
-    const fullUrl = window.location.origin + video.video_url;
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fullUrl)}`, '_blank');
-}
-
-function compartirVideoWhatsApp() {
-    const selectedId = $('#shareVideoSelect').val();
-    if (!selectedId) {
-        alert('Selecciona un curso primero');
-        return;
-    }
-    const video = listaVideos.find(v => v.id == selectedId);
-    if (!video || !video.video_url) return;
-    const fullUrl = window.location.origin + video.video_url;
-    const text = encodeURIComponent(`🎓 ${video.title}\n📹 Mira el video promocional:\n${fullUrl}`);
-    window.open(`https://wa.me/?text=${text}`, '_blank');
-}
-
-function compartirVideoTikTok() {
-    const selectedId = $('#shareVideoSelect').val();
-    if (!selectedId) {
-        alert('Selecciona un curso primero');
-        return;
-    }
-    const video = listaVideos.find(v => v.id == selectedId);
-    if (!video || !video.video_url) return;
-    const fullUrl = window.location.origin + video.video_url;
-    const mensaje = `🎓 ${video.title}\n✨ Aprende desde casa\n✅ Certificación incluida\n📹 ${fullUrl}`;
-    alert(`📱 Para compartir en TikTok:\n\nCopia este texto:\n\n${mensaje}`);
-    window.open('https://www.tiktok.com/upload', '_blank');
-}
 
     // ==================== VIDEOS ====================
     async function subirVideoPromocional() {
@@ -949,40 +905,25 @@ function compartirVideoTikTok() {
         else alert('Error');
     }
     async function cargarListaVideos() {
-    if (!token || localStorage.getItem('user_role') !== 'admin') return;
-    try {
-        const r = await fetch('/courses/videos_list', { headers: { 'Authorization': `Bearer ${token}` } });
-        if (r.ok) {
-            const videos = await r.json();
-            listaVideos = videos;  // Guardar los videos para usarlos después
-            actualizarSelectorVideosCompartir();
-            const cont = $('#videosListContainer');
-            cont.empty();
-            if (!videos.length) { cont.html('<p class="text-gray-500">No hay videos subidos</p>'); return; }
-            videos.forEach(v => {
-                cont.append(`
-                    <div class="border rounded-lg p-4 mb-3">
-                        <div class="flex flex-wrap gap-4 items-start">
-                            <div class="flex-1">
-                                <h4 class="font-bold text-lg">${escapeHtml(v.title)}</h4>
-                                <p class="text-sm text-gray-500">ID: ${v.id}</p>
-                                <div class="mt-2 flex gap-2">
-                                    <button onclick="eliminarVideoDesdeLista(${v.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-sm">
-                                        <i class="fas fa-trash-alt mr-1"></i>Eliminar
-                                    </button>
-                                </div>
-                            </div>
-                            <video src="${v.video_url}" controls class="w-40 h-24 object-cover rounded-lg"></video>
-                        </div>
-                    </div>
-                `);
-            });
+        if (!token || localStorage.getItem('user_role') !== 'admin') return;
+        try {
+            const r = await fetch('/courses/videos_list', { headers: { 'Authorization': `Bearer ${token}` } });
+            if (r.ok) {
+                const videos = await r.json();
+                listaVideos = videos;
+                actualizarSelectorVideosCompartir();
+                const cont = $('#videosListContainer');
+                cont.empty();
+                if (!videos.length) { cont.html('<p class="text-gray-500">No hay videos subidos</p>'); return; }
+                videos.forEach(v => {
+                    cont.append(`<div class="border rounded-lg p-4 mb-3"><div class="flex flex-wrap gap-4 items-start"><div class="flex-1"><h4 class="font-bold text-lg">${escapeHtml(v.title)}</h4><p class="text-sm text-gray-500">ID: ${v.id}</p><div class="mt-2 flex gap-2"><button onclick="eliminarVideoDesdeLista(${v.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-sm"><i class="fas fa-trash-alt mr-1"></i>Eliminar</button></div></div><video src="${v.video_url}" controls class="w-40 h-24 object-cover rounded-lg"></video></div></div>`);
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            $('#videosListContainer').html('<p class="text-red-500">Error al cargar videos</p>');
         }
-    } catch (error) {
-        console.error('Error:', error);
-        $('#videosListContainer').html('<p class="text-red-500">Error al cargar videos</p>');
     }
-}
     async function eliminarVideoDesdeLista(courseId){
         if(!confirm('Eliminar?')) return;
         const r=await fetch(`/courses/delete_video/${courseId}`,{method:'DELETE',headers:{'Authorization':`Bearer ${token}`}});
@@ -990,159 +931,63 @@ function compartirVideoTikTok() {
         else alert('Error');
     }
 
-    function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
+    // ==================== CALENDARIO ====================
+    function generateCalendar() {
+        const year = 2026;
+        const month = currentCalendarMonth;
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const firstDay = new Date(year, month, 1).getDay();
+        const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-// Funciones para calendario
-function generateCalendar() {
-    const year = 2026;
-    const month = currentCalendarMonth;
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const firstDay = new Date(year, month, 1).getDay();
-    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        $('#currentMonthTitle').html(`<div class="flex justify-between items-center mb-6"><button onclick="changeMonth(-1)" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full"><i class="fas fa-chevron-left"></i> Mes anterior</button><h3 class="text-2xl font-bold gradient-text">${monthNames[month]} ${year}</h3><button onclick="changeMonth(1)" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full">Mes siguiente <i class="fas fa-chevron-right"></i></button></div>`);
 
-    // Mostrar título con botones
-    $('#currentMonthTitle').html(`
-        <div class="flex justify-between items-center mb-6">
-            <button onclick="changeMonth(-1)" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full">
-                <i class="fas fa-chevron-left"></i> Mes anterior
-            </button>
-            <h3 class="text-2xl font-bold gradient-text">${monthNames[month]} ${year}</h3>
-            <button onclick="changeMonth(1)" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full">
-                Mes siguiente <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-    `);
+        let gridHtml = '<div class="grid grid-cols-7 gap-2 mb-2">';
+        gridHtml += '<div class="text-center font-bold text-purple-600">Dom</div><div class="text-center font-bold text-purple-600">Lun</div><div class="text-center font-bold text-purple-600">Mar</div><div class="text-center font-bold text-purple-600">Mié</div><div class="text-center font-bold text-purple-600">Jue</div><div class="text-center font-bold text-purple-600">Vie</div><div class="text-center font-bold text-purple-600">Sáb</div>';
+        gridHtml += '</div><div class="grid grid-cols-7 gap-2">';
 
-    // Días de la semana
-    let gridHtml = '<div class="grid grid-cols-7 gap-2 mb-2">';
-    gridHtml += '<div class="text-center font-bold text-purple-600">Dom</div>';
-    gridHtml += '<div class="text-center font-bold text-purple-600">Lun</div>';
-    gridHtml += '<div class="text-center font-bold text-purple-600">Mar</div>';
-    gridHtml += '<div class="text-center font-bold text-purple-600">Mié</div>';
-    gridHtml += '<div class="text-center font-bold text-purple-600">Jue</div>';
-    gridHtml += '<div class="text-center font-bold text-purple-600">Vie</div>';
-    gridHtml += '<div class="text-center font-bold text-purple-600">Sáb</div>';
-    gridHtml += '</div><div class="grid grid-cols-7 gap-2">';
-
-    // Días vacíos
-    for (let i = 0; i < firstDay; i++) {
-        gridHtml += `<div class="calendar-day bg-gray-50"></div>`;
-    }
-
-    // Días del mes
-    for (let d = 1; d <= daysInMonth; d++) {
-        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const hasEvent = courseEvents.some(e => e.date === dateStr);
-        const dayEvents = courseEvents.filter(e => e.date === dateStr);
-        let eventHtml = '';
-        if (dayEvents.length > 0) {
-            eventHtml = `<div class="text-xs mt-1">${dayEvents.map(e => `<div class="bg-white/20 rounded px-1 py-0.5 text-[10px] truncate">${e.title.substring(0,12)}</div>`).join('')}</div>`;
+        for (let i = 0; i < firstDay; i++) { gridHtml += `<div class="calendar-day bg-gray-50"></div>`; }
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const hasEvent = courseEvents.some(e => e.date === dateStr);
+            const dayEvents = courseEvents.filter(e => e.date === dateStr);
+            let eventHtml = '';
+            if (dayEvents.length > 0) { eventHtml = `<div class="text-xs mt-1">${dayEvents.map(e => `<div class="bg-white/20 rounded px-1 py-0.5 text-[10px] truncate">${e.title.substring(0,12)}</div>`).join('')}</div>`; }
+            gridHtml += `<div class="calendar-day ${hasEvent ? 'has-course' : ''}" style="min-height: 80px; cursor: pointer;" onclick="showDayEvents('${dateStr}')"><div class="font-bold">${d}</div>${eventHtml}</div>`;
         }
-        gridHtml += `<div class="calendar-day ${hasEvent ? 'has-course' : ''}" style="min-height: 80px; cursor: pointer;" onclick="showDayEvents('${dateStr}')">
-                        <div class="font-bold">${d}</div>
-                        ${eventHtml}
-                    </div>`;
+        gridHtml += '</div>';
+        $('#calendarGrid').html(gridHtml);
+
+        const currentEvents = courseEvents.filter(e => { const eventMonth = parseInt(e.date.split('-')[1]) - 1; return eventMonth === month; });
+        let eventsHtml = '<h3 class="font-bold text-lg mb-3">📅 Próximos cursos este mes</h3>';
+        if (currentEvents.length === 0) { eventsHtml += '<p class="text-gray-500">No hay cursos programados para este mes</p>'; }
+        else { currentEvents.forEach(e => { const dateObj = new Date(e.date); eventsHtml += `<div class="bg-gray-50 rounded-lg p-3 flex justify-between items-center hover:shadow-md transition cursor-pointer" onclick="alert('Curso: ${e.title}')"><div><i class="fas fa-calendar-alt text-purple-500 mr-2"></i>${e.title}</div><div class="text-sm text-gray-500">${dateObj.toLocaleDateString('es-ES', { day:'numeric', month:'long' })}</div></div>`; }); }
+        $('#calendarEvents').html(eventsHtml);
     }
 
-    gridHtml += '</div>';
-    $('#calendarGrid').html(gridHtml);
-
-    // Mostrar eventos del mes
-    const currentEvents = courseEvents.filter(e => {
-        const eventMonth = parseInt(e.date.split('-')[1]) - 1;
-        return eventMonth === month;
-    });
-
-    let eventsHtml = '<h3 class="font-bold text-lg mb-3">📅 Próximos cursos este mes</h3>';
-    if (currentEvents.length === 0) {
-        eventsHtml += '<p class="text-gray-500">No hay cursos programados para este mes</p>';
-    } else {
-        currentEvents.forEach(e => {
-            const dateObj = new Date(e.date);
-            eventsHtml += `
-                <div class="bg-gray-50 rounded-lg p-3 flex justify-between items-center hover:shadow-md transition cursor-pointer" onclick="alert('Curso: ${e.title}')">
-                    <div><i class="fas fa-calendar-alt text-purple-500 mr-2"></i>${e.title}</div>
-                    <div class="text-sm text-gray-500">${dateObj.toLocaleDateString('es-ES', { day:'numeric', month:'long' })}</div>
-                </div>
-            `;
-        });
-    }
-    $('#calendarEvents').html(eventsHtml);
-}
-
-
-function sendEmpresaRequest(event) {
-    event.preventDefault();
-
-    const nombreEmpresa = $('#empresaNombre').val();
-    const contacto = $('#empresaContacto').val();
-    const email = $('#empresaEmail').val();
-    const telefono = $('#empresaTelefono').val();
-    const curso = $('#empresaCurso').val();
-    const mensaje = $('#empresaMensaje').val();
-
-    // Validar campos obligatorios
-    if (!nombreEmpresa || !contacto || !email) {
-        alert('Por favor completa los campos obligatorios: Empresa, Contacto y Correo.');
-        return;
+    function sendEmpresaRequest(event) {
+        event.preventDefault();
+        const nombreEmpresa = $('#empresaNombre').val();
+        const contacto = $('#empresaContacto').val();
+        const email = $('#empresaEmail').val();
+        const telefono = $('#empresaTelefono').val();
+        const curso = $('#empresaCurso').val();
+        const mensaje = $('#empresaMensaje').val();
+        if (!nombreEmpresa || !contacto || !email) { alert('Por favor completa los campos obligatorios: Empresa, Contacto y Correo.'); return; }
+        const asunto = `Solicitud de curso cerrado desde EduPlatform - ${nombreEmpresa}`;
+        const contenido = `<h2>Nueva solicitud de curso cerrado</h2><p><strong>Empresa:</strong> ${nombreEmpresa}</p><p><strong>Contacto:</strong> ${contacto}</p><p><strong>Email:</strong> ${email}</p><p><strong>Teléfono:</strong> ${telefono || 'No proporcionado'}</p><p><strong>Curso de interés:</strong> ${curso}</p><p><strong>Mensaje adicional:</strong> ${mensaje || 'No especificado'}</p>`;
+        fetch('/api/empresa/contacto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ asunto, contenido, email_contacto: email }) })
+            .then(response => response.json())
+            .then(data => { if (data.success) { alert('✅ Solicitud enviada.'); $('#empresaForm')[0].reset(); } else { alert('❌ Error.'); } })
+            .catch(error => { console.error('Error:', error); alert('❌ Error de conexión.'); });
     }
 
-    // Preparar el contenido del email
-    const asunto = `Solicitud de curso cerrado desde EduPlatform - ${nombreEmpresa}`;
-    const contenido = `
-        <h2>Nueva solicitud de curso cerrado</h2>
-        <p><strong>Empresa:</strong> ${nombreEmpresa}</p>
-        <p><strong>Contacto:</strong> ${contacto}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Teléfono:</strong> ${telefono || 'No proporcionado'}</p>
-        <p><strong>Curso de interés:</strong> ${curso}</p>
-        <p><strong>Mensaje adicional:</strong> ${mensaje || 'No especificado'}</p>
-    `;
-
-    // Enviar usando fetch a un endpoint de tu backend
-    fetch('/api/empresa/contacto', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ asunto, contenido, email_contacto: email })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('✅ Solicitud enviada. Nos pondremos en contacto contigo pronto.');
-            $('#empresaForm')[0].reset();
-        } else {
-            alert('❌ Error al enviar. Intenta de nuevo más tarde.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('❌ Error de conexión.');
-    });
-}
-
-function changeMonth(delta) {
-    currentCalendarMonth = (currentCalendarMonth + delta + 12) % 12;
-    generateCalendar();
-}
-
-function showDayEvents(dateStr) {
-    const events = courseEvents.filter(e => e.date === dateStr);
-    if (events.length === 0) {
-        alert(`No hay cursos para el ${new Date(dateStr).toLocaleDateString('es-ES')}`);
-    } else {
-        alert(`📅 Cursos el ${new Date(dateStr).toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' })}:\n\n${events.map(e => `• ${e.title}`).join('\n')}`);
+    function changeMonth(delta) { currentCalendarMonth = (currentCalendarMonth + delta + 12) % 12; generateCalendar(); }
+    function showDayEvents(dateStr) {
+        const events = courseEvents.filter(e => e.date === dateStr);
+        if (events.length === 0) { alert(`No hay cursos para el ${new Date(dateStr).toLocaleDateString('es-ES')}`); }
+        else { alert(`📅 Cursos el ${new Date(dateStr).toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' })}:\n\n${events.map(e => `• ${e.title}`).join('\n')}`); }
     }
-}
-function changeMonth(delta) { currentCalendarMonth = (currentCalendarMonth + delta + 12) % 12; generateCalendar(); }
-function showProjectInquiry(type){ alert(`Solicitar info de ${type}`); }
+    function showProjectInquiry(type){ alert(`Solicitar info de ${type}`); }
 
     // ==================== INICIO ====================
     $(document).ready(function() {
