@@ -771,48 +771,7 @@ function switchTab(tabName) {
     $(`button[onclick="switchTab('${tabName}')"]`).addClass('active text-purple-600 font-semibold').removeClass('text-gray-500');
 }
 
-// Función para generar PDF del curso
-async function generarPDFCurso(cursoId) {
-    const curso = allCourses.find(c => c.id === cursoId);
-    if (!curso) {
-        alert('No se encontró el curso');
-        return;
-    }
 
-    // Mostrar indicador de carga
-    const btn = event.target.closest('button');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generando PDF...';
-    btn.disabled = true;
-
-    try {
-        // Llamar al endpoint que genera el PDF (asumiendo que existe)
-        const response = await fetch(`/generate_course_pdf/${cursoId}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (response.ok) {
-            const blob = await response.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${curso.title.replace(/[^a-z0-9]/gi, '_')}.pdf`;
-            a.click();
-            URL.revokeObjectURL(url);
-            alert('✅ PDF descargado correctamente');
-        } else {
-            // Fallback: generar PDF cliente-side con html2pdf
-            alert('Generando PDF desde el navegador...');
-            generarPDFCliente(curso);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        generarPDFCliente(curso);
-    } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    }
-}
 
 // Función alternativa para generar PDF desde el cliente (fallback)
 function generarPDFCliente(curso) {
@@ -1077,6 +1036,7 @@ async function eliminarVideoDesdeLista(courseId) {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
     btn.disabled = true;
 
+    // Crear el contenido HTML (igual que lo tienes)
     const contenido = `
         <!DOCTYPE html>
         <html>
@@ -1124,17 +1084,34 @@ async function eliminarVideoDesdeLista(courseId) {
         </html>
     `;
 
-    if (typeof html2pdf !== 'undefined') {
-        html2pdf().set({ margin: 0.5, filename: `${curso.title.replace(/[^a-z0-9]/gi, '_')}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }).from(contenido).save();
-    } else {
+    // Crear un elemento temporal
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = contenido;
+    document.body.appendChild(tempDiv);
+
+    try {
+        // Usar html2pdf correctamente
+        await html2pdf().from(tempDiv).set({
+            margin: 0.5,
+            filename: `${curso.title.replace(/[^a-z0-9]/gi, '_').substring(0, 50)}.pdf`,
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        }).save();
+
+        alert('✅ PDF generado correctamente');
+    } catch (error) {
+        console.error('Error:', error);
+        // Fallback: abrir ventana de impresión
         const ventana = window.open();
         ventana.document.write(contenido);
         ventana.document.close();
         ventana.print();
+        alert('✅ Se abrió una ventana para guardar el PDF');
+    } finally {
+        document.body.removeChild(tempDiv);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
     }
-
-    btn.innerHTML = originalText;
-    btn.disabled = false;
 }
 
     $(document).ready(function() { const savedRole = localStorage.getItem('user_role'); if (token) { $('#auth-buttons').hide(); $('#user-info').removeClass('hidden'); $('#user-name').text(`Hola, ${localStorage.getItem('user_name') || 'Usuario'}`); if (savedRole) { currentUserRole = savedRole; updateMarketingTabVisibility(); if(currentUserRole==='admin') $('#user-role-badge').text('ADMIN').show(); } else { fetch('/users/me', {headers: { 'Authorization': `Bearer ${token}` }}).then(r=>r.json()).then(userData=>{ currentUserRole=userData.role; localStorage.setItem('user_role',currentUserRole); updateMarketingTabVisibility(); if(currentUserRole==='admin') $('#user-role-badge').text('ADMIN').show(); if(currentUserRole==='admin') cargarListaVideos(); }).catch(()=>{ currentUserRole='student'; updateMarketingTabVisibility(); }); } } else { updateMarketingTabVisibility(); } loadCourses(); });
